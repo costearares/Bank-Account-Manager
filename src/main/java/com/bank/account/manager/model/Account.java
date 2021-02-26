@@ -92,4 +92,11 @@ public class Account {
                 ", type=" + type +
                 '}';
     }
+    public void deposiT(double amount) {
+        if (amount <= 0) {
+            System.out.println("Amount should be positive");
+        } else {
+            balance = balance + amount;
+        }
+    }
 }
