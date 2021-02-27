@@ -12,9 +12,10 @@ public class Account {
     private Currency currency;
     private Type type;
 
-    public Account(){
+    public Account() {
 
     }
+
     public Account(long id, String accountNumber, double balance, Currency currency, Type type) {
         this.id = id;
         this.accountNumber = accountNumber;
@@ -22,7 +23,6 @@ public class Account {
         this.currency = currency;
         this.type = type;
     }
-
 
 
     public long getId() {
@@ -92,11 +92,5 @@ public class Account {
                 ", type=" + type +
                 '}';
     }
-    public void deposiT(double amount) {
-        if (amount <= 0) {
-            System.out.println("Amount should be positive");
-        } else {
-            balance = balance + amount;
-        }
-    }
+
 }

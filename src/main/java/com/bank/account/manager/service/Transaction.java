@@ -2,87 +2,71 @@ package com.bank.account.manager.service;
 
 import com.bank.account.manager.model.Account;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Transaction {
-    Scanner s = new Scanner(System.in);
-    int numOfAccounts = 5;
-    List<Account> accounts = new ArrayList<>();
-
+    private static final Scanner scanner = new Scanner(System.in);
+    private AccountService accountService = new AccountService();
+    private List<Account> accounts = accountService.getAllAccounts();
 
 
     public void deposit() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Enter a account id");
-        long idd = s.nextLong();
+        System.out.println("Enter an account number");
+        String accNumber = scanner.next();
         System.out.println("Enter a deposit amount");
-        double da = s.nextDouble();
-        for (Account a : accounts) {
-            if (a.getId() == idd) {
-                a.deposiT(da);
-                System.out.println("New balance: " + a.getBalance());
-            }
-        }
+        double amount = scanner.nextDouble();
+        Account account = new Account();
+        account.setAccountNumber(accNumber);
+        account.setBalance(amount);
+        accountService.updateDepositBalance(account);
+        System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
+
     }
+
 
     public void withdraw() {
         System.out.println("Enter a account number");
-        long idw = s.nextLong();
+        String accNumber = scanner.next();
         System.out.println("Enter a withdraw amount");
-        double wa = s.nextDouble();
-        for (Account a : accounts) {
-            if (a.getId() == idw) {
-                double balance = a.getBalance() - wa;
-                System.out.println("New balance: " + balance);
-                break;
-            } else {
-                System.out.println("The amount is too big");
-                break;
-            }
-        }
+        double amount = scanner.nextDouble();
+        Account account = new Account();
+        account.setAccountNumber(accNumber);
+        account.setBalance(amount);
+        accountService.updateWithdrawBalance(account);
+        System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
     }
 
 
     public Account getAccountByID(long id) {
-        Account acc = new Account();
-        for (Account account : accounts) {
-            if (account.getId() == id) {
-                acc = account;
+        Account account = new Account();
+        for (Account value : accounts) {
+            if (value.getId() == id) {
+                account = value;
+            } else {
+                System.out.println("error");
             }
         }
-        return acc;
+        return account;
     }
+
 
     public void transferTo() {
-        System.out.println("Enter the id account from which we withdraw the money: ");
-        long itw = s.nextLong();
-        System.out.println("Enter the id account from which we deposit the money: ");
-        long itd = s.nextLong();
+        System.out.println("Enter the account number from which we withdraw the money: ");
+        String accNumberFrom = scanner.next();
+        System.out.println("Enter the account number from which we deposit the money: ");
+        String accNumberTo = scanner.next();
         System.out.println("Enter the amount for transfer: ");
-        double amt = s.nextDouble();
-        Account from=getAccountByID(itw);
-        Account to=getAccountByID(itd);
-       if(from.getBalance()<amt){
-           double balancefrom=from.getBalance();
-           double balanceto= to.getBalance();
-           balancefrom-=amt;
-           balanceto+=amt;
-           System.out.println("Transfer successful!");
-       }else {
-           System.out.println("Insufficient funds");
-       }
-
-    }
-
-    public void printAccountInfo(long idAccount) {
-        for (Account account : accounts) {
-            if (idAccount == account.getId()) {
-                System.out.println(account.toString());
-                return;
-            }
-        }
-        System.out.println("Account number not found.");
+        double amount = scanner.nextDouble();
+        Account accountFrom = new Account();
+        Account accountTo = new Account();
+        accountFrom.setAccountNumber(accNumberFrom);
+        accountFrom.setBalance(amount);
+        accountTo.setAccountNumber(accNumberTo);
+        accountTo.setBalance(amount);
+        accountService.updateWithdrawBalance(accountFrom);
+        accountService.updateDepositBalance(accountTo);
+        System.out.println("New balance: " + accountService.getAccountByAccNumber(accountFrom));
+        System.out.println("New balance: " + accountService.getAccountByAccNumber(accountTo));
     }
 }

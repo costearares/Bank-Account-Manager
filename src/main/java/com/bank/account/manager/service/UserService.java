@@ -10,19 +10,24 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UserService {
-    Scanner keyboard = new Scanner(System.in);
-    List<User> users = new ArrayList<>(List.of(new User(1, "Ion", "Ion Ionescu", "ionel", 5000),
-            new User(2, "Ana", "Ana Barbu", "parola", 2000)));
+    private static final Scanner keyboard = new Scanner(System.in);
+    private static List<User>users;
+
+    static {
+        users=new ArrayList<>();
+        User user1=new User(1, "Ion", "Ion Ionescu", "ionel", 5000) ;
+        User user2= new User(2, "Ana", "Ana Barbu", "parola", 2000);
+    }
+
 
     public void login() {
-        Scanner keyboard = new Scanner(System.in);
         System.out.println("Login: ");
         System.out.println("Enter a username: ");
-        String n = keyboard.next();
+        String userName = keyboard.next();
         System.out.println("Enter a password: ");
-        String p = keyboard.next();
+        String password = keyboard.next();
         for (User user : users) {
-            if (user.getUsername().equals(n) && user.getPassword().equals(p)) {
+            if (user.getUsername().equals(userName) && user.getPassword().equals(password)) {
                 System.out.println("Login successfully!");
                 break;
             } else {
@@ -34,26 +39,23 @@ public class UserService {
 
     public void addUser() {
 
-        Scanner keyboard = new Scanner(System.in);
         System.out.println("Enter a account id: ");
-        long nid = keyboard.nextLong();
+        long id = keyboard.nextLong();
         System.out.println("Enter a user name: ");
-        String nun = keyboard.next();
+        String userName = keyboard.next();
         System.out.println("Enter a name: ");
-        String nn = keyboard.next();
+        String name = keyboard.next();
         System.out.println("Enter a password: ");
-        String np = keyboard.next();
+        String password = keyboard.next();
         System.out.println("Enter a opening balance: ");
-        double nb = keyboard.nextDouble();
-
-
+        double balance = keyboard.nextDouble();
         for (User value : users) {
-            if (value.getId() == nid) {
+            if (value.getId() == id) {
                 System.out.println("This user already exists!");
                 break;
             } else {
-                User user1 = new User(nid, nun, nn, np, nb);
-                System.out.println("The new account is: " + user1.toString());
+                User user1 = new User(id, userName, name, password, balance);
+                System.out.println("The new user is: " + user1.toString());
                 users.add(user1);
                 break;
 
@@ -62,8 +64,9 @@ public class UserService {
     }
 
     public void getAllUsers() {
-        System.out.println("All users: "+ users.toString());
+        System.out.println("All users: " + users.toString());
     }
+
     public void deleteUser(User user) {
         users.remove(user);
     }

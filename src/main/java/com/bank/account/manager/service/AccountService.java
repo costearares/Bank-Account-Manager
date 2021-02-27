@@ -10,51 +10,67 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AccountService {
-    Scanner keyboard = new Scanner(System.in);
-    List<Account> accounts=new ArrayList<>();
+    private static final Scanner keyboard = new Scanner(System.in);
+    /*private List<Account> accounts = new ArrayList<>(List.of(new Account(1, "1234", 5000, Currency.valueOf("RON"), Type.valueOf("SAVINGS")),
+            new Account(2, "1784", 2000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"))));*/
+    private static List<Account> accounts;
 
-
-    public void getAllAccounts() {
-        System.out.println("All accounts: "+ accounts.toString());
+    static {
+        accounts = new ArrayList<>();
+        Account a1 = new Account(1, "1234", 5000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
+        Account a2 = new Account(2, "1784", 2000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
+        accounts.add(a1);
+        accounts.add(a2);
     }
 
+    public List<Account> getAllAccounts() {
+        return accounts;
+    }
 
     public void openNewAccount() {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Enter a account id: ");
-        long nid = keyboard.nextLong();
-        System.out.println("Enter a account number: ");
-        String nan = keyboard.next();
+        System.out.println("Enter an account id: ");
+        long id = keyboard.nextLong();
+        System.out.println("Enter an account number: ");
+        String accountNumber = keyboard.next();
         System.out.println("Enter a opening balance: ");
-        double nb = keyboard.nextDouble();
-        Account account = new Account(nid, nan, nb, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
+        double balance = keyboard.nextDouble();
+        Account account = new Account(id, accountNumber, balance, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
         for (Account value : accounts) {
             if (value.getId() != account.getId()) {
                 System.out.println("The new account is: " + account.toString());
                 accounts.add(account);
                 break;
-            }
-            else {
+            } else {
                 System.out.println("This account already exists!");
             }
         }
     }
+
     public Account getAccountByID(long id) {
-        Account acc = new Account();
-        for (Account account : accounts) {
-            if (account.getId() == id) {
-                acc = account;
+        Account account = new Account();
+        for (Account value : accounts) {
+            if (value.getId() == id) {
+                account = value;
             }
         }
-        return acc;
+        return account;
     }
+
+    public Account getAccountByAccNumber(Account inputAccount) {
+        for (Account account : accounts) {
+            if (account.getAccountNumber().equals(inputAccount.getAccountNumber())) {
+                return account;
+            }
+        }
+        return null;
+    }
+
     public void printBalance() {
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Enter a account id: ");
+        System.out.println("Enter an account id: ");
         long id = keyboard.nextLong();
-        for (Account a : accounts) {
-            if (a.getId() == id) {
-                System.out.println("Balance is: " + a.getBalance());
+        for (Account value : accounts) {
+            if (value.getId() == id) {
+                System.out.println("Balance is: " + value.getBalance());
                 break;
             } else {
                 System.out.println("Account not found ");
@@ -68,10 +84,21 @@ public class AccountService {
 
     }
 
-    public void updateAccount(Account account) {
-
-
+    public void updateDepositBalance(Account account) {
+        for (Account accountFromList : accounts) {
+            if (accountFromList.getAccountNumber().equals(account.getAccountNumber())) {
+                double oldBalance = accountFromList.getBalance();
+                accountFromList.setBalance(oldBalance + account.getBalance());
+            }
+        }
     }
 
-
+    public void updateWithdrawBalance(Account account) {
+        for (Account accountFromList : accounts) {
+            if (accountFromList.getAccountNumber().equals(account.getAccountNumber())) {
+                double oldBalance = accountFromList.getBalance();
+                accountFromList.setBalance(oldBalance - account.getBalance());
+            }
+        }
+    }
 }
