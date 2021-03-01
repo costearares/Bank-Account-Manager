@@ -37,20 +37,6 @@ public class Transaction {
         System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
     }
 
-
-    public Account getAccountByID(long id) {
-        Account account = new Account();
-        for (Account value : accounts) {
-            if (value.getId() == id) {
-                account = value;
-            } else {
-                System.out.println("error");
-            }
-        }
-        return account;
-    }
-
-
     public void transferTo() {
         System.out.println("Enter the account number from which we withdraw the money: ");
         String accNumberFrom = scanner.next();

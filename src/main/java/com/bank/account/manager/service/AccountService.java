@@ -1,7 +1,6 @@
 package com.bank.account.manager.service;
 
 import com.bank.account.manager.model.Account;
-import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.Currency;
 import com.bank.account.manager.util.Type;
 
@@ -11,8 +10,6 @@ import java.util.Scanner;
 
 public class AccountService {
     private static final Scanner keyboard = new Scanner(System.in);
-    /*private List<Account> accounts = new ArrayList<>(List.of(new Account(1, "1234", 5000, Currency.valueOf("RON"), Type.valueOf("SAVINGS")),
-            new Account(2, "1784", 2000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"))));*/
     private static List<Account> accounts;
 
     static {
@@ -27,6 +24,38 @@ public class AccountService {
         return accounts;
     }
 
+    public String selectAccountCurrency() {
+        System.out.println("Choice currency: ");
+        System.out.println("1: RON");
+        System.out.println("2: EUR");
+        String choice = keyboard.next();
+        String currency = null;
+        if (choice.equals("1")) {
+            currency = "RON";
+        } else if (choice.equals("2")) {
+            currency = "EUR";
+        } else {
+            System.out.println("Enter again!");
+        }
+        return currency;
+    }
+
+    public String selectAccountType() {
+        System.out.println("Choice account type: ");
+        System.out.println("1: CURRENT");
+        System.out.println("2: SAVINGS");
+        String typeChoice = keyboard.next();
+        String type = null;
+        if (typeChoice.equals("1")) {
+            type = "CURRENT";
+        } else if (typeChoice.equals("2")) {
+            type = "SAVINGS";
+        } else {
+            System.out.println("Enter again!");
+        }
+        return type;
+    }
+
     public void openNewAccount() {
         System.out.println("Enter an account id: ");
         long id = keyboard.nextLong();
@@ -34,9 +63,9 @@ public class AccountService {
         String accountNumber = keyboard.next();
         System.out.println("Enter a opening balance: ");
         double balance = keyboard.nextDouble();
-        Account account = new Account(id, accountNumber, balance, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
+        Account account = new Account(id, accountNumber, balance, Currency.valueOf(selectAccountCurrency()), Type.valueOf(selectAccountType()));
         for (Account value : accounts) {
-            if (value.getId() != account.getId()) {
+            if (!value.getAccountNumber().equals(account.getAccountNumber())) {
                 System.out.println("The new account is: " + account.toString());
                 accounts.add(account);
                 break;

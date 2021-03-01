@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Account {
     private long id;
     private String accountNumber;
+   // private final long acctNum = ThreadLocalRandom.current().nextLong(100000000, 999999999);
     private double balance;
     private Currency currency;
     private Type type;

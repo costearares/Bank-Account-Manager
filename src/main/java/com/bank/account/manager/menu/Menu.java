@@ -1,6 +1,7 @@
 package com.bank.account.manager.menu;
 
 import com.bank.account.manager.model.Account;
+import com.bank.account.manager.model.User;
 import com.bank.account.manager.service.AccountService;
 import com.bank.account.manager.service.Transaction;
 import com.bank.account.manager.service.UserService;
@@ -39,7 +40,6 @@ public class Menu {
                     break;
                 case 2:
                     accountService.openNewAccount();
-                    accountService.getAllAccounts();
                     break;
                 case 3:
                     transaction.deposit();
@@ -55,10 +55,9 @@ public class Menu {
                     break;
                 case 7:
                     userService.addUser();
-                    userService.getAllUsers();
                     break;
                 case 8:
-                    System.out.println("Here are the balances for each account:");
+                    System.out.println("Thank you!");
                 case 9:
                     System.exit(0);
             }
@@ -69,4 +68,8 @@ public class Menu {
     public static void printInfo(List<Account> accounts) {
         accounts.forEach(System.out::println);
     }
+
+    /*public static void printUserInfo(List<User> users) {
+        users.forEach(System.out::println);
+    }*/
 }
