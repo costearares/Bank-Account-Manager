@@ -1,15 +1,35 @@
 package com.bank.account.manager.service;
 
 import com.bank.account.manager.model.Account;
+import com.bank.account.manager.model.Transaction;
 
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
-public class Transaction {
+public class TransactionService {
     private static final Scanner scanner = new Scanner(System.in);
     private AccountService accountService = new AccountService();
-    private List<Account> accounts = accountService.getAllAccounts();
+    //private List<Account> accounts = accountService.getAllAccounts();
+    private List<Transaction> transactions = new ArrayList<>();
+    public LocalDate date = LocalDate.now();
 
+
+    public void getAllTransactions() {
+        System.out.println("Transactions: " + "\n" + transactions.toString());
+    }
+
+    public Transaction transactionWithHighestValue() {
+        Transaction highestTransaction = null;
+        for (Transaction value : transactions) {
+            if (value.getValue() > highestTransaction.getValue()) {
+                highestTransaction = value;
+            }
+        }
+        System.out.println("highestTransaction :  " + highestTransaction);
+        return highestTransaction;
+    }
 
     public void deposit() {
         System.out.println("Enter an account number");
@@ -21,7 +41,9 @@ public class Transaction {
         account.setBalance(amount);
         accountService.updateDepositBalance(account);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
-
+        String transactionType = "Deposit ";
+        Transaction trans = new Transaction(transactionType, date, amount, account.getAccountNumber());
+        transactions.add(trans);
     }
 
 
@@ -35,6 +57,9 @@ public class Transaction {
         account.setBalance(amount);
         accountService.updateWithdrawBalance(account);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
+        String transactionType = "Withdraw";
+        Transaction trans = new Transaction(transactionType, date, amount, account.getAccountNumber());
+        transactions.add(trans);
     }
 
     public void transferTo() {
@@ -54,5 +79,21 @@ public class Transaction {
         accountService.updateDepositBalance(accountTo);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(accountFrom));
         System.out.println("New balance: " + accountService.getAccountByAccNumber(accountTo));
+        String transactionTypeFrom = "Transfer from ";
+        String transactionTypeTo = "Transfer to ";
+        Transaction trans1 = new Transaction(transactionTypeFrom, date, amount, accountFrom.getAccountNumber());
+        Transaction trans2 = new Transaction(transactionTypeTo, date, amount, accountTo.getAccountNumber());
+        transactions.add(trans1);
+        transactions.add(trans2);
+    }
+
+    public List<Transaction> moneyMoved(LocalDate dateFrom, LocalDate dateTo) {
+        List<Transaction> transactionList = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            if (transaction.getDate().isAfter(dateFrom) && transaction.getDate().isBefore(dateTo)) {
+                transactionList.add(transaction);
+            }
+        }
+        return transactionList;
     }
 }

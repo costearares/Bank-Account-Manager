@@ -8,14 +8,14 @@ public class User {
     private String username;
     private String name;
     private String password;
-    private double balance;
 
-    public User(long id, String username, String name, String password, double balance) {
+
+    public User(long id, String username, String name, String password) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.password = password;
-        this.balance = balance;
+
     }
 
     public long getId() {
@@ -50,21 +50,12 @@ public class User {
         this.password = password;
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                Double.compare(user.balance, balance) == 0 &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(password, user.password);
@@ -72,7 +63,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, name, password, balance);
+        return Objects.hash(id, username, name, password);
     }
 
     @Override
@@ -82,7 +73,6 @@ public class User {
                 ", username='" + username + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", balance=" + balance +
                 '}';
     }
 }

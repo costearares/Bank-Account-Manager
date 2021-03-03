@@ -1,23 +1,41 @@
 package com.bank.account.manager.menu;
 
+import com.bank.account.manager.dao.AccountDAO;
+import com.bank.account.manager.dao.TransactionDAO;
+import com.bank.account.manager.dao.UserDAO;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.User;
 import com.bank.account.manager.service.AccountService;
-import com.bank.account.manager.service.Transaction;
+import com.bank.account.manager.service.TransactionService;
 import com.bank.account.manager.service.UserService;
+import com.bank.account.manager.validation.Connect;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         Scanner s = new Scanner(System.in);
 
-        Transaction transaction = new Transaction();
+        TransactionService transaction = new TransactionService();
         AccountService accountService = new AccountService();
         UserService userService = new UserService();
+        UserDAO user=new UserDAO();
+        UserDAO.createUserTable();
+        user.getUsers().forEach(System.out::println);
+        user.updateUserPassword(1,"test");
+        user.deleteUser(2);
+
+        AccountDAO.createAccountTable();
+        TransactionDAO.createTransactionsTable();
+        //Connect.connect();
+/*
+
+
+        UserDAO.insertUser(userService.getAllUsers());*/
 
         int user_choice = 2;
 
@@ -29,7 +47,7 @@ public class Menu {
             System.out.println("4) Withdraw to bank account");
             System.out.println("5) Get all accounts");
             System.out.println("6) Transfer");
-            System.out.println("7) Add User");
+            System.out.println("7) Transfers history");
             System.out.println("8) Exit");
             System.out.println();
             System.out.print("Enter choice [1-9]: ");
@@ -49,12 +67,13 @@ public class Menu {
                     break;
                 case 5:
                     printInfo(accountService.getAllAccounts());
+                    accountService.totalValueOfAccounts();
                     break;
                 case 6:
                     transaction.transferTo();
                     break;
                 case 7:
-                    userService.addUser();
+                    transaction.getAllTransactions();
                     break;
                 case 8:
                     System.out.println("Thank you!");

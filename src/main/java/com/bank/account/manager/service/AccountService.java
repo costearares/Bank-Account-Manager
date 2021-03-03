@@ -130,4 +130,13 @@ public class AccountService {
             }
         }
     }
+
+    public double totalValueOfAccounts(){
+        double total=0.0;
+        for (Account value:accounts){
+            total+=value.getBalance();
+        }
+        System.out.println("The value of total accounts is: "+ total);
+        return total;
+    }
 }

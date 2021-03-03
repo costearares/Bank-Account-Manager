@@ -12,8 +12,8 @@ public class UserService {
 
     static {
         users = new ArrayList<>();
-        User user1 = new User(1, "Ion", "Ion Ionescu", "ionel", 5000);
-        User user2 = new User(2, "Ana", "Ana Barbu", "parola", 2000);
+        User user1 = new User(1, "Ion", "Ion Ionescu", "ionel");
+        User user2 = new User(2, "Ana", "Ana Barbu", "parola");
         users.add(user1);
         users.add(user2);
     }
@@ -46,9 +46,7 @@ public class UserService {
         String name = keyboard.next();
         System.out.println("Enter a password: ");
         String password = keyboard.next();
-        System.out.println("Enter a opening balance: ");
-        double balance = keyboard.nextDouble();
-        User user1 = new User(id, userName, name, password, balance);
+        User user1 = new User(id, userName, name, password);
         for (User value : users) {
             if (value.getId() != id) {
                 System.out.println("The new user is: " + user1.toString());
