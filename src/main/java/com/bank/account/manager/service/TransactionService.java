@@ -1,29 +1,30 @@
 package com.bank.account.manager.service;
 
+import com.bank.account.manager.dao.AccountDAO;
+import com.bank.account.manager.dao.TransactionDAO;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.Transaction;
+import com.bank.account.manager.util.TransactionType;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+
 
 public class TransactionService {
     private static final Scanner scanner = new Scanner(System.in);
-    private AccountService accountService = new AccountService();
-    //private List<Account> accounts = accountService.getAllAccounts();
-    private List<Transaction> transactions = new ArrayList<>();
-    public LocalDate date = LocalDate.now();
+    private final AccountService accountService = new AccountService();
+    private final TransactionDAO transactionDAO = new TransactionDAO();
 
 
-    public void getAllTransactions() {
-        System.out.println("Transactions: " + "\n" + transactions.toString());
+    public void getAllTransactions() throws SQLException {
+        System.out.println("Transactions: " + "\n" + transactionDAO.getTransactions().toString());
     }
 
-    public Transaction transactionWithHighestValue() {
+    public Transaction transactionWithHighestValue() throws SQLException {
         Transaction highestTransaction = null;
-        for (Transaction value : transactions) {
-            if (value.getValue() > highestTransaction.getValue()) {
+        for (Transaction value : transactionDAO.getTransactions()) {
+            if (value.getAmount() > highestTransaction.getAmount()) {
                 highestTransaction = value;
             }
         }
@@ -31,65 +32,81 @@ public class TransactionService {
         return highestTransaction;
     }
 
-    public void deposit() {
-        System.out.println("Enter an account number");
+    public void moveMoney(TransactionType type) throws SQLException {
+        System.out.println("Enter a account number: ");
         String accNumber = scanner.next();
-        System.out.println("Enter a deposit amount");
+        System.out.println("Enter amount: ");
         double amount = scanner.nextDouble();
+        amount = Math.abs(amount);
+
+        if (type.equals(TransactionType.WITHDRAW)) {
+            amount = -amount;
+        }
         Account account = new Account();
         account.setAccountNumber(accNumber);
         account.setBalance(amount);
-        accountService.updateDepositBalance(account);
+
+        accountService.updateBalance(account);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
-        String transactionType = "Deposit ";
-        Transaction trans = new Transaction(transactionType, date, amount, account.getAccountNumber());
-        transactions.add(trans);
+
+        Transaction transaction = new Transaction();
+        transaction.setAccountNumber(account.getAccountNumber());
+        transaction.setAmount(amount);
+        transaction.setType(type);
+
+        int numberOfUpdatedRows = transactionDAO.insertTransaction(transaction);
+
+        if (numberOfUpdatedRows > 0) {
+            System.out.println(type + " is successful!");
+        } else {
+            System.out.println("The account number is wrong!");
+        }
     }
 
-
-    public void withdraw() {
-        System.out.println("Enter a account number");
-        String accNumber = scanner.next();
-        System.out.println("Enter a withdraw amount");
-        double amount = scanner.nextDouble();
-        Account account = new Account();
-        account.setAccountNumber(accNumber);
-        account.setBalance(amount);
-        accountService.updateWithdrawBalance(account);
-        System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
-        String transactionType = "Withdraw";
-        Transaction trans = new Transaction(transactionType, date, amount, account.getAccountNumber());
-        transactions.add(trans);
-    }
-
-    public void transferTo() {
+    public void transferTo() throws SQLException {
         System.out.println("Enter the account number from which we withdraw the money: ");
         String accNumberFrom = scanner.next();
         System.out.println("Enter the account number from which we deposit the money: ");
         String accNumberTo = scanner.next();
         System.out.println("Enter the amount for transfer: ");
         double amount = scanner.nextDouble();
+
         Account accountFrom = new Account();
-        Account accountTo = new Account();
         accountFrom.setAccountNumber(accNumberFrom);
-        accountFrom.setBalance(amount);
+        accountFrom.setBalance(-amount);
+
+        Account accountTo = new Account();
         accountTo.setAccountNumber(accNumberTo);
         accountTo.setBalance(amount);
-        accountService.updateWithdrawBalance(accountFrom);
-        accountService.updateDepositBalance(accountTo);
+
+        accountService.updateBalance(accountFrom);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(accountFrom));
+        accountService.updateBalance(accountTo);
         System.out.println("New balance: " + accountService.getAccountByAccNumber(accountTo));
-        String transactionTypeFrom = "Transfer from ";
-        String transactionTypeTo = "Transfer to ";
-        Transaction trans1 = new Transaction(transactionTypeFrom, date, amount, accountFrom.getAccountNumber());
-        Transaction trans2 = new Transaction(transactionTypeTo, date, amount, accountTo.getAccountNumber());
-        transactions.add(trans1);
-        transactions.add(trans2);
+
+        Transaction transactionFrom = new Transaction();
+        transactionFrom.setAccountNumber(accountFrom.getAccountNumber());
+        transactionFrom.setAmount(amount);
+        transactionFrom.setType(TransactionType.WITHDRAW);
+
+        Transaction transactionTo = new Transaction();
+        transactionTo.setAccountNumber(accountFrom.getAccountNumber());
+        transactionTo.setAmount(amount);
+        transactionTo.setType(TransactionType.DEPOSIT);
+
+        int updatedRowFrom = transactionDAO.insertTransaction(transactionFrom);
+        int updatedRowTo = transactionDAO.insertTransaction(transactionTo);
+        if (updatedRowFrom > 0 && updatedRowFrom > 0) {
+            System.out.println(" Transfer successful!");
+        } else {
+            System.out.println("The account number is wrong!");
+        }
     }
 
-    public List<Transaction> moneyMoved(LocalDate dateFrom, LocalDate dateTo) {
+
+    public List<Transaction> moneyMoved(LocalDate dateFrom, LocalDate dateTo) throws SQLException {
         List<Transaction> transactionList = new ArrayList<>();
-        for (Transaction transaction : transactions) {
+        for (Transaction transaction : transactionDAO.getTransactions()) {
             if (transaction.getDate().isAfter(dateFrom) && transaction.getDate().isBefore(dateTo)) {
                 transactionList.add(transaction);
             }

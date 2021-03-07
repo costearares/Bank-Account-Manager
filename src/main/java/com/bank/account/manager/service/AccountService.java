@@ -1,83 +1,82 @@
 package com.bank.account.manager.service;
 
+import com.bank.account.manager.dao.AccountDAO;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.util.Currency;
 import com.bank.account.manager.util.Type;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class AccountService {
     private static final Scanner keyboard = new Scanner(System.in);
-    private static List<Account> accounts;
+    private AccountDAO accountDAO = new AccountDAO();
 
-    static {
-        accounts = new ArrayList<>();
-        Account a1 = new Account(1, "1234", 5000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
-        Account a2 = new Account(2, "1784", 2000, Currency.valueOf("RON"), Type.valueOf("SAVINGS"));
-        accounts.add(a1);
-        accounts.add(a2);
+    public List<Account> getAllAccounts() throws SQLException {
+        return accountDAO.getAccounts();
     }
 
-    public List<Account> getAllAccounts() {
-        return accounts;
-    }
-
-    public String selectAccountCurrency() {
+    public Currency selectAccountCurrency() {
         System.out.println("Choice currency: ");
         System.out.println("1: RON");
         System.out.println("2: EUR");
         String choice = keyboard.next();
-        String currency = null;
+        Currency accountCurrency = null;
         if (choice.equals("1")) {
-            currency = "RON";
+            accountCurrency = Currency.RON;
         } else if (choice.equals("2")) {
-            currency = "EUR";
+            accountCurrency = Currency.EUR;
         } else {
             System.out.println("Enter again!");
         }
-        return currency;
+        return accountCurrency;
     }
 
-    public String selectAccountType() {
+    public Type selectAccountType() {
         System.out.println("Choice account type: ");
         System.out.println("1: CURRENT");
         System.out.println("2: SAVINGS");
         String typeChoice = keyboard.next();
-        String type = null;
+        Type accountType = null;
         if (typeChoice.equals("1")) {
-            type = "CURRENT";
+            accountType = Type.CURRENT;
         } else if (typeChoice.equals("2")) {
-            type = "SAVINGS";
+            accountType = Type.SAVINGS;
         } else {
             System.out.println("Enter again!");
         }
-        return type;
+        return accountType;
     }
 
-    public void openNewAccount() {
-        System.out.println("Enter an account id: ");
-        long id = keyboard.nextLong();
+    public int openNewAccount() throws SQLException {
+
         System.out.println("Enter an account number: ");
         String accountNumber = keyboard.next();
         System.out.println("Enter a opening balance: ");
         double balance = keyboard.nextDouble();
-        Account account = new Account(id, accountNumber, balance, Currency.valueOf(selectAccountCurrency()), Type.valueOf(selectAccountType()));
-        for (Account value : accounts) {
-            if (!value.getAccountNumber().equals(account.getAccountNumber())) {
-                System.out.println("The new account is: " + account.toString());
-                accounts.add(account);
-                break;
-            } else {
-                System.out.println("This account already exists!");
-            }
+        Account account = new Account();
+        account.setAccountNumber(accountNumber);
+        account.setBalance(balance);
+        account.setCurrency(selectAccountCurrency());
+        account.setType(selectAccountType());
+        Account dbAccount = accountDAO.getAccountByAccountNumber(account);
+        if (dbAccount != null) {
+            //throw ex
         }
+        int rowsNo = accountDAO.insertAccount(account);
+        System.out.println("The new account is: " + account);
+        if (rowsNo == 0) {
+            //throw e
+        }
+        System.out.println(rowsNo);
+
+        return rowsNo;
     }
 
-    public Account getAccountByID(long id) {
+    public Account getAccountByID(long id) throws SQLException {
         Account account = new Account();
-        for (Account value : accounts) {
+        for (Account value : accountDAO.getAccounts()) {
             if (value.getId() == id) {
                 account = value;
             }
@@ -85,8 +84,8 @@ public class AccountService {
         return account;
     }
 
-    public Account getAccountByAccNumber(Account inputAccount) {
-        for (Account account : accounts) {
+    public Account getAccountByAccNumber(Account inputAccount) throws SQLException {
+        for (Account account : accountDAO.getAccounts()) {
             if (account.getAccountNumber().equals(inputAccount.getAccountNumber())) {
                 return account;
             }
@@ -94,10 +93,10 @@ public class AccountService {
         return null;
     }
 
-    public void printBalance() {
+    public void printBalance() throws SQLException {
         System.out.println("Enter an account id: ");
         long id = keyboard.nextLong();
-        for (Account value : accounts) {
+        for (Account value : accountDAO.getAccounts()) {
             if (value.getId() == id) {
                 System.out.println("Balance is: " + value.getBalance());
                 break;
@@ -108,35 +107,28 @@ public class AccountService {
     }
 
 
-    public void removeAccount(Account account) {
-        accounts.remove(account);
+    public void removeAccount(Account account) throws SQLException {
+        accountDAO.getAccounts().remove(account);
 
     }
 
-    public void updateDepositBalance(Account account) {
-        for (Account accountFromList : accounts) {
-            if (accountFromList.getAccountNumber().equals(account.getAccountNumber())) {
-                double oldBalance = accountFromList.getBalance();
-                accountFromList.setBalance(oldBalance + account.getBalance());
-            }
+
+    public void updateBalance(Account account) throws SQLException {
+        Account dbAccount = accountDAO.getAccountByAccountNumber(account);
+        if (dbAccount.getAccountNumber().equals(account.getAccountNumber())) {
+            double newBalance = dbAccount.getBalance() + account.getBalance();
+            dbAccount.setBalance(newBalance);
         }
+        accountDAO.updateBalance(dbAccount);
     }
 
-    public void updateWithdrawBalance(Account account) {
-        for (Account accountFromList : accounts) {
-            if (accountFromList.getAccountNumber().equals(account.getAccountNumber())) {
-                double oldBalance = accountFromList.getBalance();
-                accountFromList.setBalance(oldBalance - account.getBalance());
-            }
-        }
-    }
 
-    public double totalValueOfAccounts(){
-        double total=0.0;
-        for (Account value:accounts){
-            total+=value.getBalance();
+    public double totalValueOfAccounts() throws SQLException {
+        double total = 0.0;
+        for (Account value : accountDAO.getAccounts()) {
+            total += value.getBalance();
         }
-        System.out.println("The value of total accounts is: "+ total);
+        System.out.println("The value of total accounts is: " + total);
         return total;
     }
 }
