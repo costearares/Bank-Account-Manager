@@ -21,9 +21,10 @@ public class FinancialController {
             System.out.println("2) Withdraw to bank account");
             System.out.println("3) Transfer");
             System.out.println("4) Transfers history");
-            System.out.println("5) Exit");
+            System.out.println("5) Go back");
+            System.out.println("6) Exit");
             System.out.println();
-            System.out.print("Enter choice [1-5]: ");
+            System.out.print("Enter choice [1-6]: ");
             userChoice = scanner.nextInt();
             switch (userChoice) {
                 case 1:
@@ -45,6 +46,6 @@ public class FinancialController {
                     System.exit(0);
             }
         }
-        while (userChoice != '5');
+        while (userChoice != '6');
     }
 }

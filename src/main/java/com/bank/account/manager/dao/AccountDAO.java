@@ -23,7 +23,7 @@ public class AccountDAO {
     private static final String INSERT = "INSERT INTO ACCOUNT (ACCOUNT_NUMBER, BALANCE, CURRENCY, TYPE) VALUES (?,?,?,?)";
     private static final String SELECT_ALL = "SELECT * FROM ACCOUNT ORDER BY BALANCE";
     private static final String UPDATE_BALANCE = "UPDATE ACCOUNT SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
-    private static final String DELETE_ACCOUNT = "DELETE FROM ACCOUNT WHERE ID = ?";
+    private static final String DELETE_ACCOUNT = "DELETE FROM ACCOUNT WHERE ACCOUNT_NUMBER = ?";
     private static final String SELECT_ACCOUNT_BY_NUMBER = "SELECT * FROM ACCOUNT WHERE ACCOUNT_NUMBER=?";
 
     public static void createAccountTable() throws SQLException {
@@ -79,10 +79,10 @@ public class AccountDAO {
         }
     }
 
-    public void deleteAccount(long Id) throws SQLException {
+    public void deleteAccount(String accountNumber) throws SQLException {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(DELETE_ACCOUNT)) {
-            ps.setLong(1, Id);
+            ps.setString(1, accountNumber);
 
             int rowsNo = ps.executeUpdate();
 

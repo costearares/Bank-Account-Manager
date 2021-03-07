@@ -74,15 +74,19 @@ public class AccountService {
         return rowsNo;
     }
 
-    public Account getAccountByID(long id) throws SQLException {
+    /*public Account getAccountByID(String accountNumber) throws SQLException {
+
         Account account = new Account();
+        account.setAccountNumber(accountNumber);
+        Account dbAccount = accountDAO.getAccountByAccountNumber(account);
+
         for (Account value : accountDAO.getAccounts()) {
-            if (value.getId() == id) {
+            if (value.getAccountNumber().equals(accountNumber)) {
                 account = value;
             }
         }
-        return account;
-    }
+        return dbAccount;
+    }*/
 
     public Account getAccountByAccNumber(Account inputAccount) throws SQLException {
         for (Account account : accountDAO.getAccounts()) {
@@ -107,8 +111,10 @@ public class AccountService {
     }
 
 
-    public void removeAccount(Account account) throws SQLException {
-        accountDAO.getAccounts().remove(account);
+    public void deleteAccount() throws SQLException {
+        System.out.println("Enter Account Number: ");
+        String accountNumber = keyboard.next();
+        accountDAO.deleteAccount(accountNumber);
 
     }
 

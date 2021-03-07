@@ -19,14 +19,14 @@ public class UserService {
         System.out.println("Enter a password: ");
         String password = keyboard.next();
 
-        User user=new User();
+        User user = new User();
         user.setUsername(userName);
         user.setName(userName);
         user.setPassword(password);
-        if(userDAO.getUserByUserName(user)!=null){
+        if (userDAO.getUserByUserName(user) != null) {
             System.out.println("Login successfully!");
             return true;
-        }else {
+        } else {
             System.out.println("Wrong User Name or Password");
             return false;
         }
@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public int addUser() throws SQLException {
-        System.out.println("Enter a user name: ");
+        System.out.println("Enter a username: ");
         String userName = keyboard.next();
         System.out.println("Enter a name: ");
         String name = keyboard.next();
@@ -63,11 +63,18 @@ public class UserService {
         return userDAO.getUsers();
     }
 
-    public void deleteUser(String name) throws SQLException {
-        userDAO.getUsers().removeIf(value -> value.getUsername().equals(name));
+    public void deleteUser() throws SQLException {
+        System.out.println("Enter a username: ");
+        String userName = keyboard.next();
+        userDAO.deleteUser(userName);
     }
 
-    public void updateUser(User user) {
+    public void updateUserPassword() throws SQLException {
+        System.out.println("Enter a username: ");
+        String userName = keyboard.next();
+        System.out.println("Enter a new password: ");
+        String password = keyboard.next();
+        userDAO.updateUserPassword(userName, password);
 
     }
 

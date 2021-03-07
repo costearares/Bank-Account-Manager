@@ -19,30 +19,42 @@ public class UpdateProfile {
 
         do {
             System.out.println("1) Add User");
-            System.out.println("2) Delete User");
-            System.out.println("3) Add Account");
-            System.out.println("4) Go back");
-            System.out.println("5) Exit");
+            System.out.println("2) Update User Password");
+            System.out.println("3) Delete User");
+            System.out.println("4) Add Account");
+            System.out.println("5) Update Account");
+            System.out.println("6) Delete Account");
+            System.out.println("7) Go back");
+            System.out.println("8) Exit");
             System.out.println();
-            System.out.print("Enter choice [1-5]: ");
+            System.out.print("Enter choice [1-8]: ");
             userChoice = scanner.nextInt();
             switch (userChoice) {
                 case 1:
                     userService.addUser();
                     break;
                 case 2:
-                    userService.deleteUser("Ana");
+                    userService.updateUserPassword();
                     break;
                 case 3:
-                    accountService.openNewAccount();
+                    userService.deleteUser();
                     break;
                 case 4:
-                    userController.chooseOption();
+                    accountService.openNewAccount();
                     break;
                 case 5:
+                    //accountService.updateAccount();
+                    break;
+                case 6:
+                    accountService.deleteAccount();
+                    break;
+                case 7:
+                    userController.chooseOption();
+                    break;
+                case 8:
                     System.exit(0);
             }
         }
-        while (userChoice != '5');
+        while (userChoice != '8');
     }
 }

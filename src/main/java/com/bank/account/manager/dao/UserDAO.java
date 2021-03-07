@@ -20,8 +20,8 @@ public class UserDAO {
 
     private static final String INSERT = "INSERT INTO USER( USERNAME, NAME, PASSWORD) VALUES (?,?,?)";
     private static final String SELECT_ALL = "SELECT * FROM USER ORDER BY NAME";
-    private static final String UPDATE_PASSWORD = "UPDATE USER SET PASSWORD = ? WHERE ID = ?";
-    private static final String DELETE_USER = "DELETE FROM USER WHERE ID = ?";
+    private static final String UPDATE_PASSWORD = "UPDATE USER SET PASSWORD = ? WHERE USERNAME = ?";
+    private static final String DELETE_USER = "DELETE FROM USER WHERE USERNAME = ?";
     private static final String SELECT_USER_BY_USERNAME = "SELECT * FROM USER WHERE USERNAME=?";
 
 
@@ -77,11 +77,11 @@ public class UserDAO {
         return user1;
     }
 
-    public void updateUserPassword(long userId, String newPassword) throws SQLException {
+    public void updateUserPassword(String username, String newPassword) throws SQLException {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(UPDATE_PASSWORD)) {
             ps.setString(1, newPassword);
-            ps.setLong(2, userId);
+            ps.setString(2, username);
 
             int rowsNo = ps.executeUpdate();
 
@@ -89,10 +89,10 @@ public class UserDAO {
         }
     }
 
-    public void deleteUser(long Id) throws SQLException {
+    public void deleteUser(String username) throws SQLException {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(DELETE_USER)) {
-            ps.setLong(1, Id);
+            ps.setString(1, username);
 
             int rowsNo = ps.executeUpdate();
 
