@@ -1,6 +1,7 @@
 package com.bank.account.manager.dao;
 
 import com.bank.account.manager.model.Transaction;
+import com.bank.account.manager.util.TransactionType;
 import com.bank.account.manager.validation.Connect;
 
 import java.sql.*;
@@ -76,11 +77,13 @@ public class TransactionDAO {
 
     private Transaction fromResultSet(ResultSet rs) throws SQLException {
         long id = rs.getLong("ID");
-        String type = rs.getString("TYPE");
-        LocalDate date = rs.getDate("DATE").toLocalDate();
-        double value = rs.getDouble("VALUE");
         String accountNumber = rs.getString("ACCOUNT_NUMBER");
+        TransactionType type = TransactionType.valueOf(rs.getString("TYPE"));
+        double value = rs.getDouble("VALUE");
+        LocalDate date = rs.getDate("DATE").toLocalDate();
+
+
         //new Transaction(id, type, date, value, accountNumber)
-        return new Transaction();
+        return new Transaction(id,accountNumber,type,value,date);
     }
 }

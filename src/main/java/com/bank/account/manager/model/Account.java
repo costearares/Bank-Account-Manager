@@ -12,19 +12,20 @@ public class Account {
     private double balance;
     private Currency currency;
     private Type type;
+    private long user_id;
 
     public Account() {
 
     }
 
-    public Account(long id, String accountNumber, double balance, Currency currency, Type type) {
+    public Account(long id, String accountNumber, double balance, Currency currency, Type type, long user_id) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.currency = currency;
         this.type = type;
+        this.user_id = user_id;
     }
-
 
     public long getId() {
         return id;
@@ -66,21 +67,12 @@ public class Account {
         this.type = type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return id == account.id &&
-                Double.compare(account.balance, balance) == 0 &&
-                Objects.equals(accountNumber, account.accountNumber) &&
-                currency == account.currency &&
-                type == account.type;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, accountNumber, balance, currency, type);
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     @Override
@@ -91,7 +83,25 @@ public class Account {
                 ", balance=" + balance +
                 ", currency=" + currency +
                 ", type=" + type +
+                ", user_id=" + user_id +
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return id == account.id &&
+                Double.compare(account.balance, balance) == 0 &&
+                Objects.equals(accountNumber, account.accountNumber) &&
+                currency == account.currency &&
+                type == account.type &&
+                Objects.equals(user_id, account.user_id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, accountNumber, balance, currency, type, user_id);
+    }
 }

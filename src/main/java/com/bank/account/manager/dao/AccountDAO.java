@@ -15,12 +15,14 @@ import java.util.List;
 public class AccountDAO {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ACCOUNT("
             + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+            //+ "FOREIGN KEY (USER_ID) REFERENCES  USER(ID),"
             + " ACCOUNT_NUMBER TEXT NOT NULL,"
             + " BALANCE DOUBLE NOT NULL,"
             + " CURRENCY TEXT NOT NULL ,"
-            + " TYPE TEXT"
+            + " TYPE TEXT,"
+            + " USER_ID NUMERIC REFERENCES  USER(ID)"
             + ")";
-    private static final String INSERT = "INSERT INTO ACCOUNT (ACCOUNT_NUMBER, BALANCE, CURRENCY, TYPE) VALUES (?,?,?,?)";
+    private static final String INSERT = "INSERT INTO ACCOUNT ( ACCOUNT_NUMBER, BALANCE, CURRENCY, TYPE, USER_ID) VALUES (?,?,?,?,?)";
     private static final String SELECT_ALL = "SELECT * FROM ACCOUNT ORDER BY BALANCE";
     private static final String UPDATE_BALANCE = "UPDATE ACCOUNT SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
     private static final String DELETE_ACCOUNT = "DELETE FROM ACCOUNT WHERE ACCOUNT_NUMBER = ?";
@@ -43,10 +45,12 @@ public class AccountDAO {
         int rowNo;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(INSERT)) {
+
             ps.setString(1, account.getAccountNumber());
             ps.setDouble(2, account.getBalance());
             ps.setString(3, account.getCurrency().name());
             ps.setString(4, account.getType().name());
+            ps.setLong(5, account.getUser_id());
             rowNo = ps.executeUpdate();
 
             System.out.println("Inserted rows: " + rowNo);
@@ -109,7 +113,8 @@ public class AccountDAO {
         double balance = rs.getDouble("BALANCE");
         Currency currency = Currency.valueOf(rs.getString("CURRENCY"));
         Type type = Type.valueOf(rs.getString("TYPE"));
+        long user_id = rs.getLong("USER_ID");
 
-        return new Account(id, accountNumber, balance, currency, type);
+        return new Account(id, accountNumber, balance, currency, type,user_id);
     }
 }

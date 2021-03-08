@@ -1,7 +1,9 @@
 package com.bank.account.manager.service;
 
 import com.bank.account.manager.dao.AccountDAO;
+import com.bank.account.manager.dao.UserDAO;
 import com.bank.account.manager.model.Account;
+import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.Currency;
 import com.bank.account.manager.util.Type;
 
@@ -12,7 +14,7 @@ import java.util.Scanner;
 public class AccountService {
     private static final Scanner keyboard = new Scanner(System.in);
     private AccountDAO accountDAO = new AccountDAO();
-
+    private User user= new User();
     public List<Account> getAllAccounts() throws SQLException {
         return accountDAO.getAccounts();
     }
@@ -55,7 +57,12 @@ public class AccountService {
         String accountNumber = keyboard.next();
         System.out.println("Enter a opening balance: ");
         double balance = keyboard.nextDouble();
+        System.out.println("Enter user ID: ");
+        long user_id= keyboard.nextLong();
+
         Account account = new Account();
+
+        account.setUser_id(user_id);
         account.setAccountNumber(accountNumber);
         account.setBalance(balance);
         account.setCurrency(selectAccountCurrency());
@@ -74,7 +81,7 @@ public class AccountService {
         return rowsNo;
     }
 
-    /*public Account getAccountByID(String accountNumber) throws SQLException {
+    public Account getAccountByID(String accountNumber) throws SQLException {
 
         Account account = new Account();
         account.setAccountNumber(accountNumber);
@@ -86,7 +93,7 @@ public class AccountService {
             }
         }
         return dbAccount;
-    }*/
+    }
 
     public Account getAccountByAccNumber(Account inputAccount) throws SQLException {
         for (Account account : accountDAO.getAccounts()) {

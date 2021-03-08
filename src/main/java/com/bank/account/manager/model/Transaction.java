@@ -8,9 +8,21 @@ import java.util.Objects;
 public class Transaction {
     private long id;
     private String accountNumber;
-    private double amount;
     private TransactionType type;
+    private double amount;
     private LocalDate date;
+
+    public Transaction(){
+
+    }
+
+    public Transaction(long id, String accountNumber, TransactionType type, double amount, LocalDate date) {
+        this.id = id;
+        this.accountNumber = accountNumber;
+        this.type = type;
+        this.amount = amount;
+        this.date = date;
+    }
 
     public long getId() {
         return id;

@@ -90,7 +90,7 @@ public class TransactionService {
         transactionFrom.setType(TransactionType.WITHDRAW);
 
         Transaction transactionTo = new Transaction();
-        transactionTo.setAccountNumber(accountFrom.getAccountNumber());
+        transactionTo.setAccountNumber(accountTo.getAccountNumber());
         transactionTo.setAmount(amount);
         transactionTo.setType(TransactionType.DEPOSIT);
 
