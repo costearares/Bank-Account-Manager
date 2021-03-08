@@ -16,11 +16,7 @@ import java.util.Scanner;
 public class Menu {
 
     private static final Scanner scanner = new Scanner(System.in);
-
-    private static final TransactionService transactionService = new TransactionService();
-    private static final AccountService accountService = new AccountService();
     private static final UserService userService = new UserService();
-    private static final FinancialController financialController = new FinancialController();
     private static final UserController userController = new UserController();
 
     public static void main(String[] args) throws SQLException {

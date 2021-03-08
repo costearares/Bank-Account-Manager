@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TransactionDAO {
+
     private static final Scanner scanner = new Scanner(System.in);
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS TRANSACTIONS ("
             + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -82,8 +83,6 @@ public class TransactionDAO {
         double value = rs.getDouble("VALUE");
         LocalDate date = rs.getDate("DATE").toLocalDate();
 
-
-        //new Transaction(id, type, date, value, accountNumber)
-        return new Transaction(id,accountNumber,type,value,date);
+        return new Transaction(id, accountNumber, type, value, date);
     }
 }

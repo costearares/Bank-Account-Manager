@@ -1,15 +1,11 @@
 package com.bank.account.manager.menu;
 
-import com.bank.account.manager.service.UserService;
-import com.bank.account.manager.util.TransactionType;
-
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserController {
-    private static final Scanner scanner = new Scanner(System.in);
 
-    private final UserService userService = new UserService();
+    private static final Scanner scanner = new Scanner(System.in);
     private static final FinancialController financialController = new FinancialController();
     private static final UpdateProfile updateProfile = new UpdateProfile();
 

@@ -1,8 +1,6 @@
 package com.bank.account.manager.dao;
 
 import com.bank.account.manager.model.Account;
-import com.bank.account.manager.model.User;
-import com.bank.account.manager.service.AccountService;
 import com.bank.account.manager.util.Currency;
 import com.bank.account.manager.util.Type;
 import com.bank.account.manager.validation.Connect;
@@ -15,7 +13,6 @@ import java.util.List;
 public class AccountDAO {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ACCOUNT("
             + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-            //+ "FOREIGN KEY (USER_ID) REFERENCES  USER(ID),"
             + " ACCOUNT_NUMBER TEXT NOT NULL,"
             + " BALANCE DOUBLE NOT NULL,"
             + " CURRENCY TEXT NOT NULL ,"
@@ -115,6 +112,6 @@ public class AccountDAO {
         Type type = Type.valueOf(rs.getString("TYPE"));
         long user_id = rs.getLong("USER_ID");
 
-        return new Account(id, accountNumber, balance, currency, type,user_id);
+        return new Account(id, accountNumber, balance, currency, type, user_id);
     }
 }
