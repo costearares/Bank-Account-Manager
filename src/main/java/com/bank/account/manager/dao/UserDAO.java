@@ -20,7 +20,7 @@ public class UserDAO {
 
     private static final String INSERT = "INSERT INTO USER( USERNAME, NAME, PASSWORD) VALUES (?,?,?)";
     private static final String SELECT_ALL = "SELECT * FROM USER ORDER BY NAME";
-    private static final String UPDATE_PASSWORD = "UPDATE USER SET PASSWORD = ? WHERE USERNAME = ?";
+    private static final String UPDATE_USER = "UPDATE USER SET USERNAME=?,NAME=?, PASSWORD = ? WHERE ID=?";
     private static final String DELETE_USER = "DELETE FROM USER WHERE USERNAME = ?";
     private static final String SELECT_USER_BY_USERNAME = "SELECT * FROM USER WHERE USERNAME=?";
 
@@ -38,7 +38,7 @@ public class UserDAO {
         }
     }
 
-    public int insertUser(User user) throws SQLException {
+    public int insertUser(User user) {
         int rowsNo;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(INSERT)) {
@@ -48,6 +48,8 @@ public class UserDAO {
 
             rowsNo = ps.executeUpdate();
             System.out.println("Inserted " + rowsNo + " row(s)");
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error while inserting new user: " + ex.getMessage());
         }
         return rowsNo;
     }
@@ -73,26 +75,31 @@ public class UserDAO {
             while (resultSet.next()) {
                 user1 = fromResultSet(resultSet);
             }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error while getting user: " + ex.getMessage());
         }
         return user1;
     }
 
-    public void updateUserPassword(String username, String newPassword) throws SQLException {
+    public User updateUser(User user) throws SQLException {
         try (Connection connection = Connect.connect();
-             PreparedStatement ps = connection.prepareStatement(UPDATE_PASSWORD)) {
-            ps.setString(1, newPassword);
-            ps.setString(2, username);
+             PreparedStatement ps = connection.prepareStatement(UPDATE_USER)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            ps.setLong(4, user.getId());
 
             int rowsNo = ps.executeUpdate();
 
             System.out.println("Updated " + rowsNo + " row(s)");
         }
+        return user;
     }
 
-    public void deleteUser(String username) throws SQLException {
+    public void deleteUser(User user) throws SQLException {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(DELETE_USER)) {
-            ps.setString(1, username);
+            ps.setString(1, user.getUsername());
 
             int rowsNo = ps.executeUpdate();
 

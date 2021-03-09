@@ -111,10 +111,11 @@ public class AccountService {
         }
     }
 
-    public void deleteAccount() throws SQLException {
+    public void deleteAccount(Account account) throws SQLException {
         System.out.println("Enter Account Number: ");
         String accountNumber = keyboard.next();
-        accountDAO.deleteAccount(accountNumber);
+        account.setAccountNumber(accountNumber);
+        accountDAO.deleteAccount(account);
 
     }
 

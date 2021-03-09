@@ -1,6 +1,8 @@
 package com.bank.account.manager.service;
 
+import com.bank.account.manager.dao.AccountDAO;
 import com.bank.account.manager.dao.UserDAO;
+import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.User;
 
 import java.sql.SQLException;
@@ -10,6 +12,7 @@ import java.util.Scanner;
 public class UserService {
     private static final Scanner keyboard = new Scanner(System.in);
     private UserDAO userDAO = new UserDAO();
+    private AccountDAO accountDAO = new AccountDAO();
 
     public User login() throws SQLException {
         System.out.println("Login: ");
@@ -41,7 +44,7 @@ public class UserService {
         User dbUser = userDAO.getUserByUserName(user);
 
         if (dbUser != null) {
-            //throw ex
+            throw new RuntimeException("User already exists!");
         }
         int rowsNo = userDAO.insertUser(user);
         System.out.println("The new User is: " + user);
@@ -56,19 +59,35 @@ public class UserService {
         return userDAO.getUsers();
     }
 
-    public void deleteUser() throws SQLException {
+    public void deleteUser(User user) throws SQLException {
         System.out.println("Enter a username: ");
         String userName = keyboard.next();
-        userDAO.deleteUser(userName);
+        user.setUsername(userName);
+
+        Account account=new Account();
+        account.setUserId(user.getId());
+        accountDAO.deleteAccount(account);
+        userDAO.deleteUser(user);
     }
 
-    public void updateUserPassword() throws SQLException {
-        System.out.println("Enter a username: ");
-        String userName = keyboard.next();
-        System.out.println("Enter a new password: ");
-        String password = keyboard.next();
-        userDAO.updateUserPassword(userName, password);
+    public User updateUserService(User user) throws SQLException {
+        User dbUser = new User();
+        if (user.equals(userDAO.getUserByUserName(user))) {
+            System.out.println("Enter new username: ");
+            String userName = keyboard.next();
+            System.out.println("Enter a new name: ");
+            String name = keyboard.next();
+            System.out.println("Enter a new password: ");
+            String password = keyboard.next();
 
+            user.setUsername(userName);
+            user.setName(name);
+            user.setPassword(password);
+
+            dbUser = userDAO.getUserByUserName(user);
+            userDAO.updateUser(user);
+        }
+        return dbUser;
     }
 
     public User getByUserName(User user) throws SQLException {

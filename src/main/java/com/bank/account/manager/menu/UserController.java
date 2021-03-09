@@ -18,7 +18,7 @@ public class UserController implements IMenu {
         do {
             System.out.println("----------------------------");
             System.out.println("1) Add User");
-            System.out.println("2) Update User Password");
+            System.out.println("2) Update User");
             System.out.println("3) Delete User");
             System.out.println("4) Go back");
             System.out.println("5) Exit");
@@ -28,13 +28,17 @@ public class UserController implements IMenu {
             userChoice = scanner.nextInt();
             switch (userChoice) {
                 case 1:
-                    userService.addUser();
+                    try {
+                        userService.addUser();
+                    } catch (RuntimeException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                     break;
                 case 2:
-                    userService.updateUserPassword();
+                    userService.updateUserService(user);
                     break;
                 case 3:
-                    userService.deleteUser();
+                    userService.deleteUser(user);
                     break;
                 case 4:
                     menu.chooseOption(user);

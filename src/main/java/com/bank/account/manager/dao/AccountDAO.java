@@ -82,10 +82,10 @@ public class AccountDAO {
         }
     }
 
-    public void deleteAccount(String accountNumber) throws SQLException {
+    public void deleteAccount(Account account) throws SQLException {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(DELETE_ACCOUNT)) {
-            ps.setString(1, accountNumber);
+            ps.setString(1, account.getAccountNumber());
 
             int rowsNo = ps.executeUpdate();
 
