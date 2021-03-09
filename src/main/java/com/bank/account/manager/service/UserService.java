@@ -3,7 +3,6 @@ package com.bank.account.manager.service;
 import com.bank.account.manager.dao.UserDAO;
 import com.bank.account.manager.model.User;
 
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -12,7 +11,7 @@ public class UserService {
     private static final Scanner keyboard = new Scanner(System.in);
     private UserDAO userDAO = new UserDAO();
 
-    public boolean login() throws SQLException {
+    public User login() throws SQLException {
         System.out.println("Login: ");
         System.out.println("Enter a username: ");
         String userName = keyboard.next();
@@ -23,14 +22,8 @@ public class UserService {
         user.setUsername(userName);
         user.setName(userName);
         user.setPassword(password);
-        if (userDAO.getUserByUserName(user) != null) {
-            System.out.println("Login successfully!");
-            return true;
-        } else {
-            System.out.println("Wrong User Name or Password");
-            return false;
-        }
 
+        return userDAO.getUserByUserName(user);
     }
 
     public int addUser() throws SQLException {

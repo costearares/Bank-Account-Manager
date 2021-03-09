@@ -12,9 +12,7 @@ public class Transaction {
     private double amount;
     private LocalDate date;
 
-    public Transaction(){
-
-    }
+    public Transaction() {}
 
     public Transaction(long id, String accountNumber, TransactionType type, double amount, LocalDate date) {
         this.id = id;

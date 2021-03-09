@@ -1,37 +1,48 @@
 package com.bank.account.manager.menu;
 
+import com.bank.account.manager.model.User;
+import com.bank.account.manager.service.UserService;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class UserController {
+public class UserController implements IMenu {
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final FinancialController financialController = new FinancialController();
-    private static final UpdateProfile updateProfile = new UpdateProfile();
+    private static final UserService userService = new UserService();
+    private static final Menu menu = new Menu();
 
-    public void chooseOption() throws SQLException {
-        int userChoice = 2;
+    public void chooseOption(User user) throws SQLException {
+        int userChoice;
 
         do {
-            System.out.println("1) Update Profile");
-            System.out.println("2) Financial services");
-            System.out.println("3) Exit");
-            System.out.println();
-            System.out.print("Enter choice [1-3]: ");
+            System.out.println("----------------------------");
+            System.out.println("1) Add User");
+            System.out.println("2) Update User Password");
+            System.out.println("3) Delete User");
+            System.out.println("4) Go back");
+            System.out.println("5) Exit");
+            System.out.println("----------------------------");
+            System.out.print("Enter choice [1-5]: ");
+
             userChoice = scanner.nextInt();
             switch (userChoice) {
                 case 1:
-                    updateProfile.profile();
+                    userService.addUser();
                     break;
                 case 2:
-                    financialController.financial();
+                    userService.updateUserPassword();
                     break;
                 case 3:
+                    userService.deleteUser();
+                    break;
+                case 4:
+                    menu.chooseOption(user);
+                    break;
+                case 5:
                     System.exit(0);
-
             }
         }
-        while (userChoice != '3');
+        while (userChoice != '5');
     }
-
 }

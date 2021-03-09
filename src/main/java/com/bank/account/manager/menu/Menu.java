@@ -1,50 +1,40 @@
 package com.bank.account.manager.menu;
 
-import com.bank.account.manager.dao.AccountDAO;
-import com.bank.account.manager.dao.TransactionDAO;
-import com.bank.account.manager.dao.UserDAO;
-import com.bank.account.manager.model.Account;
-import com.bank.account.manager.service.AccountService;
-import com.bank.account.manager.service.TransactionService;
-import com.bank.account.manager.service.UserService;
-import com.bank.account.manager.util.TransactionType;
+import com.bank.account.manager.model.User;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Scanner;
 
-public class Menu {
+public class Menu implements IMenu {
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final UserService userService = new UserService();
+    private static final TransactionController transactionController = new TransactionController();
     private static final UserController userController = new UserController();
+    private static final AccountController accountController = new AccountController();
 
-    public static void main(String[] args) throws SQLException {
-
-        UserDAO.createUserTable();
-        AccountDAO.createAccountTable();
-        TransactionDAO.createTransactionsTable();
-
-        int userChoice = 2;
+    public void chooseOption(User user) throws SQLException {
+        int userChoice;
 
         do {
-            System.out.println();
-            System.out.println("1) New User");
-            System.out.println("2) Login");
-            System.out.println("3) Exit");
-            System.out.println();
+            System.out.println("----------------------------");
+            System.out.println("1) Update Profile");
+            System.out.println("2) Account Management");
+            System.out.println("3) Financial services");
+            System.out.println("4) Exit");
+            System.out.println("----------------------------");
             System.out.print("Enter choice [1-3]: ");
+
             userChoice = scanner.nextInt();
             switch (userChoice) {
                 case 1:
-                    userService.addUser();
+                    userController.chooseOption(user);
                     break;
                 case 2:
-                    userService.login();
-                    userController.chooseOption();
+                    accountController.chooseOption(user);
                     break;
                 case 3:
-                    System.out.println("Thank you!");
+                    transactionController.chooseOption(user);
+                    break;
                 case 4:
                     System.exit(0);
             }
@@ -52,7 +42,4 @@ public class Menu {
         while (userChoice != '4');
     }
 
-    public static void printInfo(List<Account> accounts) {
-        accounts.forEach(System.out::println);
-    }
 }

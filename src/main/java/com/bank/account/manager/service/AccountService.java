@@ -1,7 +1,6 @@
 package com.bank.account.manager.service;
 
 import com.bank.account.manager.dao.AccountDAO;
-import com.bank.account.manager.dao.UserDAO;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.Currency;
@@ -14,7 +13,7 @@ import java.util.Scanner;
 public class AccountService {
     private static final Scanner keyboard = new Scanner(System.in);
     private AccountDAO accountDAO = new AccountDAO();
-    private User user= new User();
+
     public List<Account> getAllAccounts() throws SQLException {
         return accountDAO.getAccounts();
     }
@@ -51,25 +50,21 @@ public class AccountService {
         return accountType;
     }
 
-    public int openNewAccount() throws SQLException {
-
+    public int openNewAccount(User user) {
         System.out.println("Enter an account number: ");
         String accountNumber = keyboard.next();
         System.out.println("Enter a opening balance: ");
         double balance = keyboard.nextDouble();
-        System.out.println("Enter user ID: ");
-        long user_id= keyboard.nextLong();
 
         Account account = new Account();
-
-        account.setUser_id(user_id);
+        account.setUserId(user.getId());
         account.setAccountNumber(accountNumber);
         account.setBalance(balance);
         account.setCurrency(selectAccountCurrency());
         account.setType(selectAccountType());
         Account dbAccount = accountDAO.getAccountByAccountNumber(account);
         if (dbAccount != null) {
-            //throw ex
+            throw new RuntimeException("Account already exists!");
         }
         int rowsNo = accountDAO.insertAccount(account);
         System.out.println("The new account is: " + account);
@@ -82,7 +77,6 @@ public class AccountService {
     }
 
     public Account getAccountByID(String accountNumber) throws SQLException {
-
         Account account = new Account();
         account.setAccountNumber(accountNumber);
         Account dbAccount = accountDAO.getAccountByAccountNumber(account);
@@ -117,14 +111,12 @@ public class AccountService {
         }
     }
 
-
     public void deleteAccount() throws SQLException {
         System.out.println("Enter Account Number: ");
         String accountNumber = keyboard.next();
         accountDAO.deleteAccount(accountNumber);
 
     }
-
 
     public void updateBalance(Account account) throws SQLException {
         Account dbAccount = accountDAO.getAccountByAccountNumber(account);
@@ -134,7 +126,6 @@ public class AccountService {
         }
         accountDAO.updateBalance(dbAccount);
     }
-
 
     public double totalValueOfAccounts() throws SQLException {
         double total = 0.0;

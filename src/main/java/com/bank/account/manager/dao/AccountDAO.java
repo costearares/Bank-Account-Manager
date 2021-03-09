@@ -38,7 +38,7 @@ public class AccountDAO {
         }
     }
 
-    public int insertAccount(Account account) throws SQLException {
+    public int insertAccount(Account account) {
         int rowNo;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(INSERT)) {
@@ -47,10 +47,12 @@ public class AccountDAO {
             ps.setDouble(2, account.getBalance());
             ps.setString(3, account.getCurrency().name());
             ps.setString(4, account.getType().name());
-            ps.setLong(5, account.getUser_id());
+            ps.setLong(5, account.getUserId());
             rowNo = ps.executeUpdate();
 
             System.out.println("Inserted rows: " + rowNo);
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error while inserting new account: " + ex.getMessage());
         }
         return rowNo;
     }
@@ -91,7 +93,7 @@ public class AccountDAO {
         }
     }
 
-    public Account getAccountByAccountNumber(Account account) throws SQLException {
+    public Account getAccountByAccountNumber(Account account) {
         Account account1 = null;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(SELECT_ACCOUNT_BY_NUMBER)) {
@@ -100,6 +102,8 @@ public class AccountDAO {
             while (resultSet.next()) {
                 account1 = fromResultSet(resultSet);
             }
+        } catch (SQLException ex){
+            throw new RuntimeException("Error while getting account: " + ex.getMessage());
         }
         return account1;
     }

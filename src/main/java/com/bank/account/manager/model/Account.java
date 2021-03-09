@@ -12,19 +12,18 @@ public class Account {
     private double balance;
     private Currency currency;
     private Type type;
-    private long user_id;
+    private long userId;
 
     public Account() {
-
     }
 
-    public Account(long id, String accountNumber, double balance, Currency currency, Type type, long user_id) {
+    public Account(long id, String accountNumber, double balance, Currency currency, Type type, long userId) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.currency = currency;
         this.type = type;
-        this.user_id = user_id;
+        this.userId = userId;
     }
 
     public long getId() {
@@ -67,12 +66,12 @@ public class Account {
         this.type = type;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -83,7 +82,7 @@ public class Account {
                 ", balance=" + balance +
                 ", currency=" + currency +
                 ", type=" + type +
-                ", user_id=" + user_id +
+                ", user_id=" + userId +
                 '}';
     }
 
@@ -97,11 +96,11 @@ public class Account {
                 Objects.equals(accountNumber, account.accountNumber) &&
                 currency == account.currency &&
                 type == account.type &&
-                Objects.equals(user_id, account.user_id);
+                Objects.equals(userId, account.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountNumber, balance, currency, type, user_id);
+        return Objects.hash(id, accountNumber, balance, currency, type, userId);
     }
 }

@@ -1,6 +1,5 @@
 package com.bank.account.manager.service;
 
-import com.bank.account.manager.dao.AccountDAO;
 import com.bank.account.manager.dao.TransactionDAO;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.Transaction;
@@ -96,13 +95,12 @@ public class TransactionService {
 
         int updatedRowFrom = transactionDAO.insertTransaction(transactionFrom);
         int updatedRowTo = transactionDAO.insertTransaction(transactionTo);
-        if (updatedRowFrom > 0 && updatedRowFrom > 0) {
+        if (updatedRowFrom > 0 && updatedRowTo > 0) {
             System.out.println(" Transfer successful!");
         } else {
             System.out.println("The account number is wrong!");
         }
     }
-
 
     public List<Transaction> moneyMoved(LocalDate dateFrom, LocalDate dateTo) throws SQLException {
         List<Transaction> transactionList = new ArrayList<>();
