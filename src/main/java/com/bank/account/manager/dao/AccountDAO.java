@@ -125,9 +125,7 @@ public class AccountDAO {
         } catch (SQLException ex) {
             throw new RuntimeException("Error while getting account: " + ex.getMessage());
         }
-        if (dbAccount == null) {
-            throw new AccountNotFoundException("Account " + account.getAccountNumber() + " not found.");
-        }
+
         return dbAccount;
     }
 

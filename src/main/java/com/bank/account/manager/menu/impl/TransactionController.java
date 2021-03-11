@@ -31,10 +31,10 @@ public class TransactionController implements IMenu {
                 userChoice = scanner.nextInt();
                 switch (userChoice) {
                     case 1:
-                        transactionService.moveMoney(TransactionType.DEPOSIT);
+                        transactionService.moveMoney(TransactionType.DEPOSIT,user);
                         break;
                     case 2:
-                        transactionService.moveMoney(TransactionType.WITHDRAW);
+                        transactionService.moveMoney(TransactionType.WITHDRAW,user);
                         break;
                     case 3:
                         transactionService.transferTo(user);
