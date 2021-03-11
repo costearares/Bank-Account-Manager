@@ -1,6 +1,7 @@
 package com.bank.account.manager.dao;
 
 import com.bank.account.manager.model.Account;
+import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.AccountType;
 import com.bank.account.manager.util.Currency;
 import com.bank.account.manager.exception.AccountNotFoundException;
@@ -24,18 +25,14 @@ public class AccountDAO {
     private static final String UPDATE_BALANCE = "UPDATE ACCOUNT SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
     private static final String DELETE_ACCOUNT = "DELETE FROM ACCOUNT WHERE ACCOUNT_NUMBER = ?";
     private static final String DELETE_ACCOUNT_BY_USER_ID = "DELETE FROM ACCOUNT WHERE USER_ID = ?";
-    private static final String SELECT_ACCOUNT_BY_NUMBER = "SELECT * FROM ACCOUNT WHERE ACCOUNT_NUMBER=?";
+    private static final String SELECT_ACCOUNT_BY_NUMBER = "SELECT * FROM ACCOUNT WHERE ACCOUNT_NUMBER = ?";
+    private static final String SELECT_ACCOUNTS_BY_USER = "SELECT * FROM ACCOUNT WHERE USER_ID = ?";
+
 
     public static void createAccountTable() throws SQLException {
         try (Connection connection = Connect.connect();
              Statement statement = connection.createStatement()) {
             statement.execute(CREATE_TABLE);
-        }
-    }
-
-    public void insertAccount(List<Account> accounts) throws SQLException {
-        for (Account account : accounts) {
-            insertAccount(account);
         }
     }
 
@@ -60,6 +57,21 @@ public class AccountDAO {
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                accounts.add(fromResultSet(rs));
+            }
+        }
+        return accounts;
+    }
+
+    public List<Account> getAccountsByUserID(Account account) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+
+        try (Connection connection = Connect.connect();
+             PreparedStatement ps = connection.prepareStatement(SELECT_ACCOUNTS_BY_USER)) {
+            ps.setLong(1, account.getUserId());
+
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 accounts.add(fromResultSet(rs));
             }
@@ -128,5 +140,11 @@ public class AccountDAO {
         long user_id = rs.getLong("USER_ID");
 
         return new Account(id, accountNumber, balance, currency, accountType, user_id);
+    }
+
+    public void insertAccount(List<Account> accounts) throws SQLException {
+        for (Account account : accounts) {
+            insertAccount(account);
+        }
     }
 }

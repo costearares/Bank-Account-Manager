@@ -4,6 +4,7 @@ import com.bank.account.manager.dao.TransactionDAO;
 import com.bank.account.manager.exception.AccountNotFoundException;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.Transaction;
+import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.TransactionType;
 
 import java.sql.SQLException;
@@ -12,15 +13,16 @@ import java.util.*;
 public class TransactionService {
 
     private static final Scanner scanner = new Scanner(System.in);
-
     private final TransactionDAO transactionDAO = new TransactionDAO();
     private final AccountService accountService = new AccountService();
+
 
     public List<Transaction> getAllTransactions() throws SQLException {
         return transactionDAO.getTransactions();
     }
 
     public void moveMoney(TransactionType type) throws SQLException {
+
         System.out.println("Enter a account number: ");
         String accNumber = scanner.next();
         System.out.println("Enter amount: ");
@@ -53,7 +55,18 @@ public class TransactionService {
         }
     }
 
-    public void transferTo() throws SQLException {
+    public void transferTo(User user) throws SQLException {
+        List<Account> accounts = accountService.getAccountsByUserID(user);
+
+        System.out.println("\n Available accounts for user " + user.getUsername() + ": ");
+        System.out.println("--------------------------------------------------------------------");
+        accounts.forEach(account ->
+                System.out.println("Account Number: " + account.getAccountNumber()
+                        + " :: Balance: " + account.getBalance()
+                        + " :: Currency: " + account.getCurrency()
+                ));
+        System.out.println("--------------------------------------------------------------------");
+
         System.out.println("Enter the account number from which we withdraw the money: ");
         String accNumberFrom = scanner.next();
         System.out.println("Enter the account number from which we deposit the money: ");
@@ -107,14 +120,4 @@ public class TransactionService {
         account.setCurrency(dbAccount.getCurrency());
     }
 
-    public Transaction transactionWithHighestValue() throws SQLException {
-        Transaction highestTransaction = null;
-        for (Transaction value : transactionDAO.getTransactions()) {
-            if (value.getAmount() > highestTransaction.getAmount()) {
-                highestTransaction = value;
-            }
-        }
-        System.out.println("highestTransaction :  " + highestTransaction);
-        return highestTransaction;
-    }
 }

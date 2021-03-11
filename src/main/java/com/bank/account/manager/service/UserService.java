@@ -13,7 +13,6 @@ public class UserService {
     private static final Scanner keyboard = new Scanner(System.in);
     private UserDAO userDAO = new UserDAO();
     private AccountDAO accountDAO = new AccountDAO();
-    private AccountService accountService = new AccountService();
 
     public User login() throws SQLException {
         System.out.println("Login: ");

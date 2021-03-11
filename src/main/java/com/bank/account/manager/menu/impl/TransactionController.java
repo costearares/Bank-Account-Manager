@@ -37,7 +37,7 @@ public class TransactionController implements IMenu {
                         transactionService.moveMoney(TransactionType.WITHDRAW);
                         break;
                     case 3:
-                        transactionService.transferTo();
+                        transactionService.transferTo(user);
                         break;
                     case 4:
                         System.out.println("Transactions: " + "\n" + transactionService.getAllTransactions());

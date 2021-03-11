@@ -2,6 +2,7 @@ package com.bank.account.manager.service;
 
 import com.bank.account.manager.dao.AccountDAO;
 import com.bank.account.manager.exception.AccountAlreadyExistsException;
+import com.bank.account.manager.exception.AccountNotFoundException;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.AccountType;
@@ -14,8 +15,8 @@ import java.util.Scanner;
 public class AccountService {
 
     private static final Scanner keyboard = new Scanner(System.in);
-
     private AccountDAO accountDAO = new AccountDAO();
+    private UserService userService = new UserService();
 
     public List<Account> getAllAccounts() throws SQLException {
         return accountDAO.getAccounts();
@@ -90,13 +91,15 @@ public class AccountService {
         return null;
     }
 
-    public Account getAccountByUserID(Account account) throws SQLException {
-        for (Account value : accountDAO.getAccounts()) {
-            if (value.getUserId() == (account.getUserId())) {
-                return value;
-            }
+    public List<Account> getAccountsByUserID(User user) throws SQLException {
+        Account account = new Account();
+        account.setUserId(user.getId());
+
+        List<Account> accounts = accountDAO.getAccountsByUserID(account);
+        if (accounts == null) {
+            throw new AccountNotFoundException("No available account found.");
         }
-        return null;
+        return accounts;
     }
 
     public void updateBalance(Account account) throws SQLException {
