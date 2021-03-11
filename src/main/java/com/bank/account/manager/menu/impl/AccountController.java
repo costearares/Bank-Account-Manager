@@ -28,7 +28,8 @@ public class AccountController implements IMenu {
                 userChoice = scanner.nextInt();
                 switch (userChoice) {
                     case 1:
-                        System.out.println(accountService.getAllAccounts());
+                        System.out.println("Accounts : " + "\n" + accountService.getAllAccounts());
+                        break;
                     case 2:
                         accountService.openNewAccount(user);
                         break;

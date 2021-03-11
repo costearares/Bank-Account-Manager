@@ -5,7 +5,9 @@ import com.bank.account.manager.util.TransactionType;
 import com.bank.account.manager.validation.Connect;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -38,7 +40,7 @@ public class TransactionDAO {
             ps.setString(1, transaction.getAccountNumber());
             ps.setDouble(2, transaction.getAmount());
             ps.setString(3, transaction.getType().name());
-            ps.setString(4, String.valueOf(new Date(System.currentTimeMillis())));
+            ps.setString(4, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
             rowsNo = ps.executeUpdate();
             System.out.println("Inserted " + rowsNo + " row(s)");
