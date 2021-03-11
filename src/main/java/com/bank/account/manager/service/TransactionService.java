@@ -1,34 +1,23 @@
 package com.bank.account.manager.service;
 
 import com.bank.account.manager.dao.TransactionDAO;
+import com.bank.account.manager.exception.AccountNotFoundException;
 import com.bank.account.manager.model.Account;
 import com.bank.account.manager.model.Transaction;
 import com.bank.account.manager.util.TransactionType;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.*;
 
-
 public class TransactionService {
+
     private static final Scanner scanner = new Scanner(System.in);
-    private final AccountService accountService = new AccountService();
+
     private final TransactionDAO transactionDAO = new TransactionDAO();
+    private final AccountService accountService = new AccountService();
 
-
-    public void getAllTransactions() throws SQLException {
-        System.out.println("Transactions: " + "\n" + transactionDAO.getTransactions().toString());
-    }
-
-    public Transaction transactionWithHighestValue() throws SQLException {
-        Transaction highestTransaction = null;
-        for (Transaction value : transactionDAO.getTransactions()) {
-            if (value.getAmount() > highestTransaction.getAmount()) {
-                highestTransaction = value;
-            }
-        }
-        System.out.println("highestTransaction :  " + highestTransaction);
-        return highestTransaction;
+    public List<Transaction> getAllTransactions() throws SQLException {
+        return transactionDAO.getTransactions();
     }
 
     public void moveMoney(TransactionType type) throws SQLException {
@@ -41,11 +30,13 @@ public class TransactionService {
         if (type.equals(TransactionType.WITHDRAW)) {
             amount = -amount;
         }
+
         Account account = new Account();
         account.setAccountNumber(accNumber);
         account.setBalance(amount);
 
         accountService.updateBalance(account);
+
         System.out.println("New balance: " + accountService.getAccountByAccNumber(account));
 
         Transaction transaction = new Transaction();
@@ -73,42 +64,57 @@ public class TransactionService {
         Account accountFrom = new Account();
         accountFrom.setAccountNumber(accNumberFrom);
         accountFrom.setBalance(-amount);
+        validateAccount(accountFrom);
 
         Account accountTo = new Account();
         accountTo.setAccountNumber(accNumberTo);
         accountTo.setBalance(amount);
+        validateAccount(accountTo);
 
-        accountService.updateBalance(accountFrom);
-        System.out.println("New balance: " + accountService.getAccountByAccNumber(accountFrom));
-        accountService.updateBalance(accountTo);
-        System.out.println("New balance: " + accountService.getAccountByAccNumber(accountTo));
+        if (accountFrom.getCurrency().equals(accountTo.getCurrency())) {
+            accountService.updateBalance(accountFrom);
+            System.out.println("New balance: " + accountService.getAccountByAccNumber(accountFrom));
+            accountService.updateBalance(accountTo);
+            System.out.println("New balance: " + accountService.getAccountByAccNumber(accountTo));
 
-        Transaction transactionFrom = new Transaction();
-        transactionFrom.setAccountNumber(accountFrom.getAccountNumber());
-        transactionFrom.setAmount(amount);
-        transactionFrom.setType(TransactionType.WITHDRAW);
+            Transaction transactionFrom = new Transaction();
+            transactionFrom.setAccountNumber(accountFrom.getAccountNumber());
+            transactionFrom.setAmount(amount);
+            transactionFrom.setType(TransactionType.WITHDRAW);
 
-        Transaction transactionTo = new Transaction();
-        transactionTo.setAccountNumber(accountTo.getAccountNumber());
-        transactionTo.setAmount(amount);
-        transactionTo.setType(TransactionType.DEPOSIT);
+            Transaction transactionTo = new Transaction();
+            transactionTo.setAccountNumber(accountTo.getAccountNumber());
+            transactionTo.setAmount(amount);
+            transactionTo.setType(TransactionType.DEPOSIT);
 
-        int updatedRowFrom = transactionDAO.insertTransaction(transactionFrom);
-        int updatedRowTo = transactionDAO.insertTransaction(transactionTo);
-        if (updatedRowFrom > 0 && updatedRowTo > 0) {
-            System.out.println(" Transfer successful!");
+            int updatedRowFrom = transactionDAO.insertTransaction(transactionFrom);
+            int updatedRowTo = transactionDAO.insertTransaction(transactionTo);
+            if (updatedRowFrom > 0 && updatedRowTo > 0) {
+                System.out.println("Transfer successful!");
+            } else {
+                throw new IllegalArgumentException("Transfer failed!");
+            }
         } else {
-            System.out.println("The account number is wrong!");
+            throw new IllegalArgumentException("Accounts should have same currency type for transfer.");
         }
     }
 
-    public List<Transaction> moneyMoved(LocalDate dateFrom, LocalDate dateTo) throws SQLException {
-        List<Transaction> transactionList = new ArrayList<>();
-        for (Transaction transaction : transactionDAO.getTransactions()) {
-            if (transaction.getDate().isAfter(dateFrom) && transaction.getDate().isBefore(dateTo)) {
-                transactionList.add(transaction);
+    private void validateAccount(Account account) throws SQLException {
+        Account dbAccount = accountService.getAccountByAccNumber(account);
+        if (dbAccount == null) {
+            throw new AccountNotFoundException("Account " + account.getAccountNumber() + " not found.");
+        }
+        account.setCurrency(dbAccount.getCurrency());
+    }
+
+    public Transaction transactionWithHighestValue() throws SQLException {
+        Transaction highestTransaction = null;
+        for (Transaction value : transactionDAO.getTransactions()) {
+            if (value.getAmount() > highestTransaction.getAmount()) {
+                highestTransaction = value;
             }
         }
-        return transactionList;
+        System.out.println("highestTransaction :  " + highestTransaction);
+        return highestTransaction;
     }
 }

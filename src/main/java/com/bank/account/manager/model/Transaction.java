@@ -6,18 +6,20 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Transaction {
+
     private long id;
     private String accountNumber;
-    private TransactionType type;
+    private TransactionType accountType;
     private double amount;
     private LocalDate date;
 
-    public Transaction() {}
+    public Transaction() {
+    }
 
-    public Transaction(long id, String accountNumber, TransactionType type, double amount, LocalDate date) {
+    public Transaction(long id, String accountNumber, TransactionType accountType, double amount, LocalDate date) {
         this.id = id;
         this.accountNumber = accountNumber;
-        this.type = type;
+        this.accountType = accountType;
         this.amount = amount;
         this.date = date;
     }
@@ -47,11 +49,11 @@ public class Transaction {
     }
 
     public TransactionType getType() {
-        return type;
+        return accountType;
     }
 
-    public void setType(TransactionType type) {
-        this.type = type;
+    public void setType(TransactionType accountType) {
+        this.accountType = accountType;
     }
 
     public LocalDate getDate() {
@@ -69,24 +71,24 @@ public class Transaction {
         Transaction that = (Transaction) o;
         return id == that.id &&
                 Double.compare(that.amount, amount) == 0 &&
-                Objects.equals(type, that.type) &&
+                Objects.equals(accountType, that.accountType) &&
                 Objects.equals(date, that.date) &&
                 Objects.equals(accountNumber, that.accountNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, date, amount, accountNumber);
+        return Objects.hash(id, accountType, date, amount, accountNumber);
     }
 
     @Override
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", type='" + type + '\'' +
+                ", accountType='" + accountType + '\'' +
                 ", date=" + date +
                 ", value=" + amount +
                 ", accountNumber='" + accountNumber + '\'' +
-                '}';
+                "} \n";
     }
 }

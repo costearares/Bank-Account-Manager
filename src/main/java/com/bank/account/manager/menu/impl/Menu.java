@@ -1,18 +1,18 @@
-package com.bank.account.manager.menu;
+package com.bank.account.manager.menu.impl;
 
+import com.bank.account.manager.menu.IMenu;
 import com.bank.account.manager.model.User;
 
-import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Menu implements IMenu {
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final TransactionController transactionController = new TransactionController();
-    private static final UserController userController = new UserController();
-    private static final AccountController accountController = new AccountController();
+    private static final IMenu transactionController = new TransactionController();
+    private static final IMenu userController = new UserController();
+    private static final IMenu accountController = new AccountController();
 
-    public void chooseOption(User user) throws SQLException {
+    public void chooseOption(User user) {
         int userChoice;
 
         do {

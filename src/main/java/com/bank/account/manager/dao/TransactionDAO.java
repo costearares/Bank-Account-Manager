@@ -8,17 +8,16 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Date;
 
 public class TransactionDAO {
 
-    private static final Scanner scanner = new Scanner(System.in);
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS TRANSACTIONS ("
             + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
             + " ACCOUNT_NUMBER TEXT, "
             + " AMOUNT DOUBLE NOT NULL, "
             + " TYPE VARCHAR NOT NULL, "
-            + " CREATED_DATE DATE NOT NULL "
+            + " CREATED_DATE VARCHAR NOT NULL "
             + ")";
     private static final String INSERT = "INSERT INTO TRANSACTIONS(ACCOUNT_NUMBER, AMOUNT, TYPE, CREATED_DATE) VALUES (?,?,?,?)";
     private static final String SELECT_ALL = "SELECT * FROM TRANSACTIONS ORDER BY ID";
@@ -32,12 +31,6 @@ public class TransactionDAO {
         }
     }
 
-    public void insertTransaction(List<Transaction> transactions) throws SQLException {
-        for (Transaction transaction : transactions) {
-            insertTransaction(transaction);
-        }
-    }
-
     public int insertTransaction(Transaction transaction) throws SQLException {
         int rowsNo;
         try (Connection connection = Connect.connect();
@@ -45,7 +38,7 @@ public class TransactionDAO {
             ps.setString(1, transaction.getAccountNumber());
             ps.setDouble(2, transaction.getAmount());
             ps.setString(3, transaction.getType().name());
-            ps.setDate(4, new Date(System.currentTimeMillis()));
+            ps.setString(4, String.valueOf(new Date(System.currentTimeMillis())));
 
             rowsNo = ps.executeUpdate();
             System.out.println("Inserted " + rowsNo + " row(s)");
@@ -80,8 +73,10 @@ public class TransactionDAO {
         long id = rs.getLong("ID");
         String accountNumber = rs.getString("ACCOUNT_NUMBER");
         TransactionType type = TransactionType.valueOf(rs.getString("TYPE"));
-        double value = rs.getDouble("VALUE");
-        LocalDate date = rs.getDate("DATE").toLocalDate();
+        double value = rs.getDouble("AMOUNT");
+
+        String createdDate = rs.getString("CREATED_DATE");
+        LocalDate date = LocalDate.parse(createdDate);
 
         return new Transaction(id, accountNumber, type, value, date);
     }

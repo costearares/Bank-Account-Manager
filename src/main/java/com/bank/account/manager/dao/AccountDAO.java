@@ -1,10 +1,10 @@
 package com.bank.account.manager.dao;
 
 import com.bank.account.manager.model.Account;
+import com.bank.account.manager.util.AccountType;
 import com.bank.account.manager.util.Currency;
-import com.bank.account.manager.util.Type;
+import com.bank.account.manager.exception.AccountNotFoundException;
 import com.bank.account.manager.validation.Connect;
-
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class AccountDAO {
     private static final String SELECT_ALL = "SELECT * FROM ACCOUNT ORDER BY BALANCE";
     private static final String UPDATE_BALANCE = "UPDATE ACCOUNT SET BALANCE = ? WHERE ACCOUNT_NUMBER = ?";
     private static final String DELETE_ACCOUNT = "DELETE FROM ACCOUNT WHERE ACCOUNT_NUMBER = ?";
+    private static final String DELETE_ACCOUNT_BY_USER_ID = "DELETE FROM ACCOUNT WHERE USER_ID = ?";
     private static final String SELECT_ACCOUNT_BY_NUMBER = "SELECT * FROM ACCOUNT WHERE ACCOUNT_NUMBER=?";
 
     public static void createAccountTable() throws SQLException {
@@ -38,7 +39,7 @@ public class AccountDAO {
         }
     }
 
-    public int insertAccount(Account account) {
+    public int insertAccount(Account account) throws SQLException {
         int rowNo;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(INSERT)) {
@@ -49,10 +50,6 @@ public class AccountDAO {
             ps.setString(4, account.getType().name());
             ps.setLong(5, account.getUserId());
             rowNo = ps.executeUpdate();
-
-            System.out.println("Inserted rows: " + rowNo);
-        } catch (SQLException ex) {
-            throw new RuntimeException("Error while inserting new account: " + ex.getMessage());
         }
         return rowNo;
     }
@@ -93,19 +90,33 @@ public class AccountDAO {
         }
     }
 
+    public void deleteAccountByUserId(Account account) throws SQLException {
+        try (Connection connection = Connect.connect();
+             PreparedStatement ps = connection.prepareStatement(DELETE_ACCOUNT_BY_USER_ID)) {
+            ps.setLong(1, account.getUserId());
+
+            int rowsNo = ps.executeUpdate();
+
+            System.out.println("Deleted " + rowsNo + " row(s)");
+        }
+    }
+
     public Account getAccountByAccountNumber(Account account) {
-        Account account1 = null;
+        Account dbAccount = null;
         try (Connection connection = Connect.connect();
              PreparedStatement ps = connection.prepareStatement(SELECT_ACCOUNT_BY_NUMBER)) {
             ps.setString(1, account.getAccountNumber());
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
-                account1 = fromResultSet(resultSet);
+                dbAccount = fromResultSet(resultSet);
             }
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             throw new RuntimeException("Error while getting account: " + ex.getMessage());
         }
-        return account1;
+        if (dbAccount == null) {
+            throw new AccountNotFoundException("Account " + account.getAccountNumber() + " not found.");
+        }
+        return dbAccount;
     }
 
     private Account fromResultSet(ResultSet rs) throws SQLException {
@@ -113,9 +124,9 @@ public class AccountDAO {
         String accountNumber = rs.getString("ACCOUNT_NUMBER");
         double balance = rs.getDouble("BALANCE");
         Currency currency = Currency.valueOf(rs.getString("CURRENCY"));
-        Type type = Type.valueOf(rs.getString("TYPE"));
+        AccountType accountType = AccountType.valueOf(rs.getString("TYPE"));
         long user_id = rs.getLong("USER_ID");
 
-        return new Account(id, accountNumber, balance, currency, type, user_id);
+        return new Account(id, accountNumber, balance, currency, accountType, user_id);
     }
 }

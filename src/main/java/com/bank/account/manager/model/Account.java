@@ -1,28 +1,28 @@
 package com.bank.account.manager.model;
 
+import com.bank.account.manager.util.AccountType;
 import com.bank.account.manager.util.Currency;
-import com.bank.account.manager.util.Type;
 
 import java.util.Objects;
 
 public class Account {
+
     private long id;
     private String accountNumber;
-    // private final long acctNum = ThreadLocalRandom.current().nextLong(100000000, 999999999);
     private double balance;
     private Currency currency;
-    private Type type;
+    private AccountType accountType;
     private long userId;
 
     public Account() {
     }
 
-    public Account(long id, String accountNumber, double balance, Currency currency, Type type, long userId) {
+    public Account(long id, String accountNumber, double balance, Currency currency, AccountType accountType, long userId) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.currency = currency;
-        this.type = type;
+        this.accountType = accountType;
         this.userId = userId;
     }
 
@@ -58,12 +58,12 @@ public class Account {
         this.currency = currency;
     }
 
-    public Type getType() {
-        return type;
+    public AccountType getType() {
+        return accountType;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public long getUserId() {
@@ -81,7 +81,7 @@ public class Account {
                 ", accountNumber='" + accountNumber + '\'' +
                 ", balance=" + balance +
                 ", currency=" + currency +
-                ", type=" + type +
+                ", accountType=" + accountType +
                 ", user_id=" + userId +
                 '}';
     }
@@ -95,12 +95,12 @@ public class Account {
                 Double.compare(account.balance, balance) == 0 &&
                 Objects.equals(accountNumber, account.accountNumber) &&
                 currency == account.currency &&
-                type == account.type &&
+                accountType == account.accountType &&
                 Objects.equals(userId, account.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountNumber, balance, currency, type, userId);
+        return Objects.hash(id, accountNumber, balance, currency, accountType, userId);
     }
 }

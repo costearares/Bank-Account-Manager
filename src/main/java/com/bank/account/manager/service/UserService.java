@@ -13,6 +13,7 @@ public class UserService {
     private static final Scanner keyboard = new Scanner(System.in);
     private UserDAO userDAO = new UserDAO();
     private AccountDAO accountDAO = new AccountDAO();
+    private AccountService accountService = new AccountService();
 
     public User login() throws SQLException {
         System.out.println("Login: ");
@@ -49,7 +50,7 @@ public class UserService {
         int rowsNo = userDAO.insertUser(user);
         System.out.println("The new User is: " + user);
         if (rowsNo == 0) {
-            //throw e
+            throw new RuntimeException("The user was NOT added");
         }
         System.out.println(rowsNo);
         return rowsNo;
@@ -60,17 +61,17 @@ public class UserService {
     }
 
     public void deleteUser(User user) throws SQLException {
+
         System.out.println("Enter a username: ");
         String userName = keyboard.next();
         user.setUsername(userName);
-
-        Account account=new Account();
+        Account account = new Account();
         account.setUserId(user.getId());
-        accountDAO.deleteAccount(account);
+        accountDAO.deleteAccountByUserId(account);
         userDAO.deleteUser(user);
     }
 
-    public User updateUserService(User user) throws SQLException {
+    public User updateUser(User user) throws SQLException {
         User dbUser = new User();
         if (user.equals(userDAO.getUserByUserName(user))) {
             System.out.println("Enter new username: ");
