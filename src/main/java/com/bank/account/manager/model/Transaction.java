@@ -9,17 +9,17 @@ public class Transaction {
 
     private long id;
     private String accountNumber;
-    private TransactionType accountType;
+    private TransactionType transactionType;
     private double amount;
     private LocalDate date;
 
     public Transaction() {
     }
 
-    public Transaction(long id, String accountNumber, TransactionType accountType, double amount, LocalDate date) {
+    public Transaction(long id, String accountNumber, TransactionType transactionType, double amount, LocalDate date) {
         this.id = id;
         this.accountNumber = accountNumber;
-        this.accountType = accountType;
+        this.transactionType = transactionType;
         this.amount = amount;
         this.date = date;
     }
@@ -49,11 +49,11 @@ public class Transaction {
     }
 
     public TransactionType getType() {
-        return accountType;
+        return transactionType;
     }
 
     public void setType(TransactionType accountType) {
-        this.accountType = accountType;
+        this.transactionType = accountType;
     }
 
     public LocalDate getDate() {
@@ -71,21 +71,21 @@ public class Transaction {
         Transaction that = (Transaction) o;
         return id == that.id &&
                 Double.compare(that.amount, amount) == 0 &&
-                Objects.equals(accountType, that.accountType) &&
+                Objects.equals(transactionType, that.transactionType) &&
                 Objects.equals(date, that.date) &&
                 Objects.equals(accountNumber, that.accountNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountType, date, amount, accountNumber);
+        return Objects.hash(id, transactionType, date, amount, accountNumber);
     }
 
     @Override
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
-                ", accountType='" + accountType + '\'' +
+                ", accountType='" + transactionType + '\'' +
                 ", date=" + date +
                 ", value=" + amount +
                 ", accountNumber='" + accountNumber + '\'' +

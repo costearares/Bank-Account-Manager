@@ -1,10 +1,8 @@
 package com.bank.account.manager.dao;
 
 import com.bank.account.manager.model.Account;
-import com.bank.account.manager.model.User;
 import com.bank.account.manager.util.AccountType;
 import com.bank.account.manager.util.Currency;
-import com.bank.account.manager.exception.AccountNotFoundException;
 import com.bank.account.manager.validation.Connect;
 
 import java.sql.*;

@@ -39,13 +39,11 @@ public class AccountService {
         if (dbAccount != null) {
             throw new AccountAlreadyExistsException("Account already exists!");
         }
-
         int rowsNo = accountDAO.insertAccount(account);
         if (rowsNo == 0) {
             throw new IllegalArgumentException("Account not inserted.");
         }
         System.out.println("The new account is: " + account);
-
         return rowsNo;
     }
 

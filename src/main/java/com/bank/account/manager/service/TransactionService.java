@@ -22,16 +22,8 @@ public class TransactionService {
     }
 
     public void moveMoney(TransactionType type, User user) throws SQLException {
-        List<Account> accounts = accountService.getAccountsByUserID(user);
+        availableAccounts(user);
 
-        System.out.println("\n Available accounts for user " + user.getUsername() + ": ");
-        System.out.println("--------------------------------------------------------------------");
-        accounts.forEach(account ->
-                System.out.println("Account Number: " + account.getAccountNumber()
-                        + " :: Balance: " + account.getBalance()
-                        + " :: Currency: " + account.getCurrency()
-                ));
-        System.out.println("--------------------------------------------------------------------");
         System.out.println("Enter a account number: ");
         String accNumber = scanner.next();
         System.out.println("Enter amount: ");
@@ -65,16 +57,7 @@ public class TransactionService {
     }
 
     public void transferTo(User user) throws SQLException {
-        List<Account> accounts = accountService.getAccountsByUserID(user);
-
-        System.out.println("\n Available accounts for user " + user.getUsername() + ": ");
-        System.out.println("--------------------------------------------------------------------");
-        accounts.forEach(account ->
-                System.out.println("Account Number: " + account.getAccountNumber()
-                        + " :: Balance: " + account.getBalance()
-                        + " :: Currency: " + account.getCurrency()
-                ));
-        System.out.println("--------------------------------------------------------------------");
+        availableAccounts(user);
 
         System.out.println("Enter the account number from which we withdraw the money: ");
         String accNumberFrom = scanner.next();
@@ -129,4 +112,16 @@ public class TransactionService {
         account.setCurrency(dbAccount.getCurrency());
     }
 
+    private void availableAccounts(User user) throws SQLException {
+        List<Account> accounts = accountService.getAccountsByUserID(user);
+
+        System.out.println("\n Available accounts for user " + user.getUsername() + ": ");
+        System.out.println("--------------------------------------------------------------------");
+        accounts.forEach(account ->
+                System.out.println("Account Number: " + account.getAccountNumber()
+                        + " :: Balance: " + account.getBalance()
+                        + " :: Currency: " + account.getCurrency()
+                ));
+        System.out.println("--------------------------------------------------------------------");
+    }
 }

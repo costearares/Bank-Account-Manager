@@ -18,33 +18,30 @@ public class UserController implements IMenu {
 
             do {
                 System.out.println("----------------------------");
-                System.out.println("1) Add User");
-                System.out.println("2) Update User");
-                System.out.println("3) Delete User");
-                System.out.println("4) Go back");
-                System.out.println("5) Exit");
+                System.out.println("1) Update User");
+                System.out.println("2) Delete User");
+                System.out.println("3) Go back");
+                System.out.println("4) Exit");
                 System.out.println("----------------------------");
-                System.out.print("Enter choice [1-5]: ");
+                System.out.print("Enter choice [1-4]: ");
 
                 userChoice = scanner.nextInt();
                 switch (userChoice) {
+
                     case 1:
-                        userService.addUser();
-                        break;
-                    case 2:
                         userService.updateUser(user);
                         break;
-                    case 3:
+                    case 2:
                         userService.deleteUser(user);
                         break;
-                    case 4:
+                    case 3:
                         menu.chooseOption(user);
                         break;
-                    case 5:
+                    case 4:
                         System.exit(0);
                 }
             }
-            while (userChoice != '5');
+            while (userChoice != '4');
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
