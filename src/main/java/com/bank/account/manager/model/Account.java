@@ -83,7 +83,7 @@ public class Account {
                 ", currency=" + currency +
                 ", accountType=" + accountType +
                 ", user_id=" + userId +
-                '}';
+                "} \n";
     }
 
     @Override
